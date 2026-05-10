@@ -29,7 +29,7 @@ export default async function Home() {
             その電話番号、大丈夫ですか？
           </h1>
           <p className="text-gray-500">
-            番号を入力すると危険度・口コミ・対処法をまとめます
+            番号入力で危険度・口コミ・対処法が調べられます
           </p>
           <SearchBox />
         </section>
