@@ -6,6 +6,8 @@ import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
 import CommentForm from "@/components/CommentForm";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ number: string }>; searchParams: Promise<{ admin?: string }> };
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -25,7 +27,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 export default async function TelPage({ params, searchParams }: Props) {
   const { number } = await params;
   const { admin } = await searchParams;
-  const isAdmin = admin === process.env.ADMIN_KEY;
+  const isAdmin = !!admin && admin === process.env.ADMIN_KEY;
   const phone = await fetchPhone(number);
   if (!phone) notFound();
 
@@ -34,6 +36,7 @@ export default async function TelPage({ params, searchParams }: Props) {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {admin && <div className="bg-yellow-100 text-xs p-2 text-center">admin={admin} / key={(process.env.ADMIN_KEY ?? "undefined")} / match={String(isAdmin)}</div>}
       <header className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <Link href="/" className="text-sm text-gray-500 hover:text-gray-800">
