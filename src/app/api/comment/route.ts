@@ -8,17 +8,18 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 async function moderate(body: string): Promise<"published" | "pending"> {
-  const prompt = `以下の口コミを審査してください。
+  const prompt = `迷惑電話・詐欺電話の情報共有サイトに投稿された口コミを審査してください。
+投稿者は電話を受けた被害者・目撃者であり、他のユーザーへの注意喚起が目的です。
 
 【掲載OK（published）】
-- 迷惑電話・詐欺電話に関する具体的な体験談
-- 注意喚起・情報共有として有益な内容
-- 主観的な表現でも事実に基づく内容（「詐欺だと思う」「最悪だった」等）
+- 受けた電話の内容・手口・状況の説明
+- 「詐欺だった」「個人情報を聞き出そうとした」「強引な勧誘だった」等の体験報告
+- 主観的・感情的な表現でも体験に基づく内容
 
 【非掲載（pending）】
-- 誹謗中傷・罵詈雑言（特定の人物への攻撃）
-- 個人情報（氏名・住所・口座番号等）を含む
-- 意味不明・スパム・関係のない内容
+- 特定の個人（電話をかけた人物）への人身攻撃・誹謗中傷
+- 投稿者自身の個人情報（氏名・住所・口座番号等）が含まれる
+- 意味不明・スパム・電話と無関係な内容
 
 【口コミ】
 ${body}
