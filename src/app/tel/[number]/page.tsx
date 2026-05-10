@@ -6,21 +6,26 @@ import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
 import CommentForm from "@/components/CommentForm";
 
-type Props = { params: Promise<{ number: string }> };
+type Props = { params: Promise<{ number: string }>; searchParams: Promise<{ admin?: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { number } = await params;
+  const { admin } = await searchParams;
   const phone = await fetchPhone(number);
   const formatted = formatNumber(number);
   const rank = phone?.danger_rank ?? "判定中";
   const count = phone?.comment_count ?? 0;
+  const isAdmin = admin === process.env.ADMIN_KEY;
   return {
     title: `${formatted}｜危険度：${rank}｜口コミ ${count > 0 ? count : "-"}件 - みんなの迷惑電話番号データベース`,
+    ...(isAdmin && { robots: { index: false, follow: false } }),
   };
 }
 
-export default async function TelPage({ params }: Props) {
+export default async function TelPage({ params, searchParams }: Props) {
   const { number } = await params;
+  const { admin } = await searchParams;
+  const isAdmin = admin === process.env.ADMIN_KEY;
   const phone = await fetchPhone(number);
   if (!phone) notFound();
 
@@ -105,6 +110,7 @@ export default async function TelPage({ params }: Props) {
                   <p className="mt-2 text-xs text-gray-400">
                     {new Date(c.created_at).toLocaleDateString("ja-JP")}
                     {c.source === "scraped" && "　※他サイトの口コミをAIが要約・浄化したものです"}
+                    {isAdmin && <span className="ml-2 font-mono text-gray-300">#{c.id}</span>}
                   </p>
                 </li>
               ))}
