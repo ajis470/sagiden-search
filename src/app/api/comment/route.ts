@@ -45,6 +45,9 @@ export async function POST(req: NextRequest) {
   if (!number || !body?.trim()) {
     return NextResponse.json({ message: "入力内容を確認してください" }, { status: 400 });
   }
+  if ([...body].length < 5 || [...body].length > 1000) {
+    return NextResponse.json({ message: "本文は5〜1000文字で入力してください" }, { status: 400 });
+  }
 
   const status = await moderate(body);
 
