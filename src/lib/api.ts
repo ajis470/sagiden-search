@@ -67,7 +67,7 @@ export async function fetchPhone(number: string): Promise<PhoneNumber | null> {
   try {
     const res = await fetch(
       `${API_BASE}/api_phone.php?number=${encodeURIComponent(number)}`,
-      { headers, next: { revalidate: 60 } }
+      { headers, cache: "no-store" }
     );
     if (!res.ok) return null;
     const json = await res.json();
