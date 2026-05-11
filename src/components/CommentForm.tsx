@@ -9,6 +9,7 @@ type Props = {
 export default function CommentForm({ number }: Props) {
   const [body, setBody] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +26,8 @@ export default function CommentForm({ number }: Props) {
       setStatus("done");
       setBody("");
     } else {
+      const json = await res.json().catch(() => ({}));
+      setErrorMsg(json.message ?? "送信に失敗しました。もう一度お試しください。");
       setStatus("error");
     }
   }
@@ -47,7 +50,7 @@ export default function CommentForm({ number }: Props) {
         className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-base focus:border-red-500 focus:outline-none resize-none"
       />
       {status === "error" && (
-        <p className="text-sm text-red-600">送信に失敗しました。もう一度お試しください。</p>
+        <p className="text-sm text-red-600">{errorMsg}</p>
       )}
       <button
         type="submit"

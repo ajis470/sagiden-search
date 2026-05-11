@@ -49,6 +49,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "本文は5〜1000文字で入力してください" }, { status: 400 });
   }
 
+  // レートリミット
+  const now = Date.now();
+  const todayStr = new Date().toISOString().slice(0, 10); // "2026-05-11"
+
+  const lastAt = Number(req.cookies.get("last_comment_at")?.value ?? 0);
+  if (now - lastAt < 60 * 1000) {
+    return NextResponse.json({ message: "投稿は1分に1回までです" }, { status: 429 });
+  }
+
+  const dailyRaw = req.cookies.get("comment_dates")?.value ?? "[]";
+  const dailyDates: string[] = JSON.parse(dailyRaw).filter((d: string) => d === todayStr);
+  if (dailyDates.length >= 10) {
+    return NextResponse.json({ message: "1日の投稿上限（10件）に達しました" }, { status: 429 });
+  }
+
   const status = await moderate(body);
 
   const res = await fetch(`${API_BASE}/api_comment.php`, {
@@ -61,5 +76,14 @@ export async function POST(req: NextRequest) {
   });
 
   const json = await res.json();
-  return NextResponse.json(json, { status: res.status });
+  const response = NextResponse.json(json, { status: res.status });
+
+  if (res.ok) {
+    const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };
+    response.cookies.set("last_comment_at", String(now), { ...cookieOpts, maxAge: 60 });
+    const newDates = [...dailyDates, todayStr];
+    response.cookies.set("comment_dates", JSON.stringify(newDates), { ...cookieOpts, maxAge: 60 * 60 * 24 });
+  }
+
+  return response;
 }
