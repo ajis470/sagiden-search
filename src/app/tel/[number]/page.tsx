@@ -135,7 +135,7 @@ export default async function TelPage({ params, searchParams }: Props) {
         <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
           <h2 className="font-bold text-lg text-gray-900">口コミを投稿する</h2>
           <p className="text-sm text-gray-500">
-            投稿内容は確認後に掲載されます。誹謗中傷・個人情報を含む投稿は掲載されません。
+            誹謗中傷・個人情報を含む投稿は掲載されません。
           </p>
           <CommentForm number={number} />
         </section>
