@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.replace(/^﻿/, "").trim());
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 function buildJpnumberUrl(number: string): string | null {
