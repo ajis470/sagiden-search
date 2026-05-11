@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   });
 
   const json = await res.json();
-  const response = NextResponse.json(json, { status: res.status });
+  const response = NextResponse.json({ ...json, status_moderation: status }, { status: res.status });
 
   if (res.ok && status === "published") {
     const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };

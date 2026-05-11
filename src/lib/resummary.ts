@@ -49,7 +49,7 @@ ${commentText}
 
 以下のJSON形式のみで回答してください。余分なテキストは不要です：
 {
-  "summary": "何者で、どんな手口かを客観的な事実として3行以内で要約。「この電話番号は」で始めない。番号自体には言及せず、発信元の正体や手口から書き始める。情報が少ない場合は末尾に指定のメッセージを追記。",
+  "summary": "何者で、どんな手口かを客観的な事実として3行以内で要約。「この電話番号は」で始めない。情報が少ない場合は末尾に指定のメッセージを追記。",
   "recommended_action": "この電話を受けた人が取るべき具体的な行動を1〜2行で",
   "danger_rank": "C/B/A/S/SS/SSSのいずれか1つ",
   "highlights": [
@@ -76,22 +76,35 @@ export async function triggerResummarize(number: string) {
       if (jpRes.ok) {
         const html = await jpRes.text();
         const scraped = parseJpnumberComments(html);
-        if (scraped.length > 0) {
-          await fetch(`${API_BASE}/api_scrape.php`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              secret: API_SECRET,
-              phone_number: number,
-              comments: scraped,
-              source: "scraped",
-              source_site: "jpnumber.com",
-              force_resummary: true,
-            }),
-          });
-          console.log(`[resummary] jpnumber scraped: ${scraped.length}件`);
-        }
+        // スクレイプ結果の有無に関わらず force_resummary=true でフラグをセット
+        await fetch(`${API_BASE}/api_scrape.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: API_SECRET,
+            phone_number: number,
+            comments: scraped,
+            source: "scraped",
+            source_site: "jpnumber.com",
+            force_resummary: true,
+          }),
+        });
+        console.log(`[resummary] jpnumber scraped: ${scraped.length}件`);
       }
+    } else {
+      // URL構築不可の番号も needs_resummary=1 をセット（既存コメントで要約）
+      await fetch(`${API_BASE}/api_scrape.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: API_SECRET,
+          phone_number: number,
+          comments: [],
+          source: "scraped",
+          source_site: "jpnumber.com",
+          force_resummary: true,
+        }),
+      });
     }
 
     // 2. needs_resummary=1 の番号一覧から対象を取得
@@ -103,7 +116,7 @@ export async function triggerResummarize(number: string) {
       return;
     }
 
-    // 3. Gemini で要約生成（件数が少ない場合は薄いデータ用プロンプト）
+    // 3. Gemini で要約生成
     const summary = await generateSummary(number, entry.comments);
     console.log(`[resummary] ${number}: 危険度=${summary.danger_rank}`);
 

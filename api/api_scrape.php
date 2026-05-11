@@ -26,11 +26,7 @@ $source_site = $input['source_site'] ?? '';
 if (strlen($number) < 10 || strlen($number) > 11) {
     json_response(['status' => 'error', 'message' => '番号が不正です'], 400);
 }
-if (!is_array($comments)) {
-    json_response(['status' => 'error', 'message' => 'コメントなし'], 400);
-}
-// force_resummary=true の場合は空コメントでもフラグセットのみ許可
-if (count($comments) === 0 && empty($input['force_resummary'])) {
+if (!is_array($comments) || count($comments) === 0) {
     json_response(['status' => 'error', 'message' => 'コメントなし'], 400);
 }
 
@@ -69,12 +65,10 @@ foreach ($comments as $body) {
     $inserted++;
 }
 
-// comment_count を更新。force_resummary=true の場合は件数に関わらずフラグをセット
-$force_resummary = !empty($input['force_resummary']);
-if ($inserted > 0 || $force_resummary) {
-    $resummary_flag = ($force_resummary || $inserted >= 5) ? 1 : 0;
-    $pdo->prepare('UPDATE sagiden_phone_numbers SET needs_resummary = GREATEST(needs_resummary, ?), comment_count = comment_count + ? WHERE id = ?')
-        ->execute([$resummary_flag, $inserted, $phone_id]);
+// 新規コメントがあれば needs_resummary をセット & comment_count を更新
+if ($inserted > 0) {
+    $pdo->prepare('UPDATE sagiden_phone_numbers SET needs_resummary = 1, comment_count = comment_count + ? WHERE id = ?')
+        ->execute([$inserted, $phone_id]);
 }
 
 json_response([

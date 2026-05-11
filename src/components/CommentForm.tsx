@@ -10,7 +10,7 @@ type Props = {
 export default function CommentForm({ number }: Props) {
   const router = useRouter();
   const [body, setBody] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "done" | "done_published" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -25,7 +25,8 @@ export default function CommentForm({ number }: Props) {
     });
 
     if (res.ok) {
-      setStatus("done");
+      const json = await res.json().catch(() => ({}));
+      setStatus(json.status_moderation === "published" ? "done_published" : "done");
       setBody("");
       router.refresh();
     } else {
@@ -33,6 +34,14 @@ export default function CommentForm({ number }: Props) {
       setErrorMsg(json.message ?? "送信に失敗しました。もう一度お試しください。");
       setStatus("error");
     }
+  }
+
+  if (status === "done_published") {
+    return (
+      <div className="rounded-xl bg-green-50 border border-green-200 px-5 py-4 text-green-800">
+        投稿が掲載されました。ありがとうございます。
+      </div>
+    );
   }
 
   if (status === "done") {
