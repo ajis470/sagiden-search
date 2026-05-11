@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { fetchPhone } from "@/lib/api";
+import { triggerResummarize } from "@/lib/resummary";
 import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
 import CommentForm from "@/components/CommentForm";
@@ -30,6 +32,11 @@ export default async function TelPage({ params, searchParams }: Props) {
   const isAdmin = !!admin && admin === process.env.ADMIN_KEY;
   const phone = await fetchPhone(number);
   if (!phone) notFound();
+
+  // サマリーがない番号は初回アクセス時にバックグラウンドで即時要約
+  if (!phone.ai_summary) {
+    after(triggerResummarize(number));
+  }
 
   const rank = phone.danger_rank;
   const summary = phone.ai_summary;
