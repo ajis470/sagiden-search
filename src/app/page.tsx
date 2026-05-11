@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SearchBox from "@/components/SearchBox";
 import DangerBadge from "@/components/DangerBadge";
 import { fetchTrending, type TrendingNumber } from "@/lib/api";
@@ -25,6 +26,23 @@ export default async function Home() {
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-10 flex flex-col gap-10">
         {/* 検索 */}
         <section className="flex flex-col items-center gap-4 text-center">
+          <Image
+            src="/hero.png"
+            alt="みんなの声で、怪しい着信を防ぐ。"
+            width={1500}
+            height={500}
+            className="w-full rounded-2xl"
+            priority
+          />
+          <a
+            href="https://x.com/sagidensearch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-black text-white font-bold px-6 py-3 rounded-full hover:bg-gray-800 transition-colors text-sm"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Xでフォローして最新情報を受け取る
+          </a>
           <h1 className="text-2xl font-bold text-gray-900">
             その電話番号、大丈夫ですか？
           </h1>
@@ -80,6 +98,7 @@ export default async function Home() {
         <div className="mt-2 flex justify-center gap-4">
           <Link href="/danger-rank" className="underline">危険度ランクについて</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
+          <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>
         </div>
       </footer>
     </div>
