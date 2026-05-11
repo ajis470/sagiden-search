@@ -9,9 +9,16 @@ export default function SearchBox() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const normalized = value.replace(/[^\d]/g, "");
-    if (normalized.length < 10) return;
-    router.push(`/tel/${normalized}`);
+    const trimmed = value.trim();
+    let normalized: string;
+    if (trimmed.startsWith("+")) {
+      normalized = "+" + trimmed.slice(1).replace(/[^\d]/g, "");
+      if (normalized.length < 8) return;
+    } else {
+      normalized = trimmed.replace(/[^\d]/g, "");
+      if (normalized.length < 10) return;
+    }
+    router.push(`/tel/${encodeURIComponent(normalized)}`);
   }
 
   return (

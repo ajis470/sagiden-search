@@ -146,6 +146,7 @@ export default async function TelPage({ params, searchParams }: Props) {
 }
 
 function formatNumber(num: string): string {
+  if (num.startsWith("+")) return num;
   if (num.length === 11) {
     return `${num.slice(0, 3)}-${num.slice(3, 7)}-${num.slice(7)}`;
   }
