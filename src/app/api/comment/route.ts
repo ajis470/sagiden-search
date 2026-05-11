@@ -11,15 +11,17 @@ async function moderate(body: string): Promise<"published" | "pending"> {
   const prompt = `迷惑電話・詐欺電話の情報共有サイトに投稿された口コミを審査してください。
 投稿者は電話を受けた被害者・目撃者であり、他のユーザーへの注意喚起が目的です。
 
-【掲載OK（published）】
-- 受けた電話の内容・手口・状況の説明
-- 「詐欺だった」「個人情報を聞き出そうとした」「強引な勧誘だった」等の体験報告
-- 主観的・感情的な表現でも体験に基づく内容
+基本方針：迷惑電話の体験報告は積極的に掲載する。疑わしい場合は掲載する。
 
-【非掲載（pending）】
-- 特定の個人（電話をかけた人物）への人身攻撃・誹謗中傷
+【必ず "pending" にする場合のみ】
+- 実在する特定個人（氏名付き）への人身攻撃・脅迫
 - 投稿者自身の個人情報（氏名・住所・口座番号等）が含まれる
-- 意味不明・スパム・電話と無関係な内容
+- 完全に無意味な文字列・スパム
+
+【それ以外は全て "published"】
+- 電話の内容・手口・状況の説明
+- 感情的な表現・悪口・怒りの言葉も含む体験報告
+- 「詐欺」「しつこい」「迷惑」「出るな」等の警告
 
 【口コミ】
 ${body}
@@ -30,13 +32,13 @@ ${body}
     const result = await model.generateContent(prompt);
     const text = result.response.text().trim().toLowerCase();
     console.log("[moderate] gemini response:", text);
-    if (text.includes("published") || text.includes("掲載ok") || text.includes("掲載可")) {
-      return "published";
+    if (text.includes("pending") || text.includes("非掲載")) {
+      return "pending";
     }
-    return "pending";
+    return "published";
   } catch (e) {
     console.error("[moderate] gemini error:", e);
-    return "pending";
+    return "published";
   }
 }
 
