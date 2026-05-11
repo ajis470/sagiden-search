@@ -9,7 +9,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const API_BASE   = 'https://api.sagiden-search.com';
 const API_SECRET = 'sgd_2026_xK9mPqR4vLzN';
-const GEMINI_KEY = 'AIzaSyABMohOmiwRrlSMhJ4MaioMHmNjNJ3Cdps';
+const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL      = 'gemini-2.5-flash-lite';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));

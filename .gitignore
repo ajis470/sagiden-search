@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# 機密情報を含むファイル
+kagoya-php/db.php
+scraper/twitter_tokens.json
+.claude/
