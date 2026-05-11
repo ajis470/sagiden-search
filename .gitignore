@@ -45,4 +45,5 @@ next-env.d.ts
 # 機密情報を含むファイル
 kagoya-php/db.php
 scraper/twitter_tokens.json
+scraper/.env.local
 .claude/
