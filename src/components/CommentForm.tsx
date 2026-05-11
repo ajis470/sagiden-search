@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   number: string;
 };
 
 export default function CommentForm({ number }: Props) {
+  const router = useRouter();
   const [body, setBody] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -25,6 +27,7 @@ export default function CommentForm({ number }: Props) {
     if (res.ok) {
       setStatus("done");
       setBody("");
+      router.refresh();
     } else {
       const json = await res.json().catch(() => ({}));
       setErrorMsg(json.message ?? "送信に失敗しました。もう一度お試しください。");
