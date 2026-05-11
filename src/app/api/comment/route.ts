@@ -29,8 +29,13 @@ ${body}
   try {
     const result = await model.generateContent(prompt);
     const text = result.response.text().trim().toLowerCase();
-    return text.includes("published") ? "published" : "pending";
-  } catch {
+    console.log("[moderate] gemini response:", text);
+    if (text.includes("published") || text.includes("掲載ok") || text.includes("掲載可")) {
+      return "published";
+    }
+    return "pending";
+  } catch (e) {
+    console.error("[moderate] gemini error:", e);
     return "pending";
   }
 }
