@@ -108,6 +108,9 @@ export default async function TelPage({ params, searchParams }: Props) {
                   key={c.id}
                   className="bg-white rounded-xl border border-gray-200 px-5 py-4"
                 >
+                  {c.status === "pending" && (
+                    <span className="inline-block mb-2 text-xs font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-full px-2 py-0.5">審査中</span>
+                  )}
                   <p className="text-gray-800 leading-7">{c.body}</p>
                   <p className="mt-2 text-xs text-gray-400">
                     {new Date(c.created_at).toLocaleDateString("ja-JP")}

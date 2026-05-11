@@ -36,6 +36,7 @@ export type Comment = {
   id: number;
   body: string;
   source: "user" | "scraped";
+  status: "published" | "pending";
   created_at: string;
 };
 
