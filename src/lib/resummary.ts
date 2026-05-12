@@ -3,8 +3,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.replace(/^﻿/, "").trim());
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+function getModel() {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.replace(/^﻿/, "").trim());
+  return genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+}
 
 function buildJpnumberUrl(number: string): string | null {
   if (number.length === 11 && /^(090|080|070|050)/.test(number)) {
@@ -57,7 +59,7 @@ ${commentText}
   ]
 }`;
 
-  const result = await model.generateContent(prompt);
+  const result = await getModel().generateContent(prompt);
   const text = result.response.text().trim();
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("JSONが見つかりません");
