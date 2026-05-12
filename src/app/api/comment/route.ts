@@ -6,8 +6,10 @@ import { triggerResummarize } from "@/lib/resummary";
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.replace(/^﻿/, "").trim());
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+function getModel() {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.replace(/^﻿/, "").trim());
+  return genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+}
 
 async function moderate(body: string): Promise<"published" | "pending"> {
   const prompt = `迷惑電話・詐欺電話の情報共有サイトに投稿された口コミを審査してください。
@@ -31,7 +33,7 @@ ${body}
 "published" または "pending" の一単語のみで答えてください。`;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const text = result.response.text().trim().toLowerCase();
     console.log("[moderate] gemini response:", text);
     if (text.includes("pending") || text.includes("非掲載")) {
