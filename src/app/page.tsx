@@ -141,7 +141,7 @@ function NumberListSection({
 }) {
   return (
     <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
-      <div className="flex items-center gap-2 mb-1 pl-3 border-l-4 border-red-400">
+      <div className="flex items-center gap-2 mb-1 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
       </div>
@@ -177,7 +177,7 @@ function RankingSection({
 }) {
   return (
     <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
-      <div className="flex items-center gap-2 mb-4 pl-3 border-l-4 border-red-400">
+      <div className="flex items-center gap-2 mb-4 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         {subtitle && <span className="text-sm text-gray-400">（{subtitle}）</span>}
