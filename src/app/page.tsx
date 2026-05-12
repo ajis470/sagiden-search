@@ -140,8 +140,8 @@ function NumberListSection({
   numbers: string[];
 }) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-1">
+    <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
+      <div className="flex items-center gap-2 mb-1 pl-3 border-l-4 border-red-400">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
       </div>
@@ -176,8 +176,8 @@ function RankingSection({
   showCount?: boolean;
 }) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-4">
+    <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
+      <div className="flex items-center gap-2 mb-4 pl-3 border-l-4 border-red-400">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         {subtitle && <span className="text-sm text-gray-400">（{subtitle}）</span>}

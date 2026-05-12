@@ -25,8 +25,15 @@ if ($secret !== API_SECRET) {
 }
 
 $number = normalize_phone($raw);
-if (strlen($number) < 10 || strlen($number) > 11) {
-    json_response(['status' => 'error', 'message' => '番号が不正です'], 400);
+if (strpos($number, '+') === 0) {
+    $digits = substr($number, 1);
+    if (strlen($digits) < 7 || strlen($digits) > 15) {
+        json_response(['status' => 'error', 'message' => '番号が不正です'], 400);
+    }
+} else {
+    if (strlen($number) < 10 || strlen($number) > 11) {
+        json_response(['status' => 'error', 'message' => '番号が不正です'], 400);
+    }
 }
 if (mb_strlen($body) < 5 || mb_strlen($body) > 1000) {
     json_response(['status' => 'error', 'message' => '本文は5〜1000文字で入力してください'], 400);
