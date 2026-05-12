@@ -70,7 +70,16 @@ export default function CommentForm({ number }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <div className="relative">
+      <div className="flex flex-col gap-1">
+        <div>
+          <button
+            type="button"
+            onClick={insertDateTime}
+            className="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-600 shadow-sm hover:border-red-400 hover:text-red-500 transition-colors"
+          >
+            🕐 今の時間で着信日時を挿入
+          </button>
+        </div>
         <textarea
           ref={textareaRef}
           value={body}
@@ -79,13 +88,6 @@ export default function CommentForm({ number }: Props) {
           rows={4}
           className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-base focus:border-red-500 focus:outline-none resize-none"
         />
-        <button
-          type="button"
-          onClick={insertDateTime}
-          className="absolute bottom-2 right-2 rounded-lg bg-gray-100 px-3 py-1 text-xs text-gray-500 hover:bg-gray-200"
-        >
-          着信日時を挿入
-        </button>
       </div>
       {status === "error" && (
         <p className="text-sm text-red-600">{errorMsg}</p>
