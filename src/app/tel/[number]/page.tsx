@@ -118,7 +118,7 @@ export default async function TelPage({ params, searchParams }: Props) {
                   {c.status === "pending" ? (
                     <p className="text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">この口コミは審査中です</p>
                   ) : (
-                    <p className="text-gray-800 leading-7">{c.body}</p>
+                    <p className="text-gray-800 leading-7 whitespace-pre-wrap">{c.body}</p>
                   )}
                   <p className="mt-2 text-xs text-gray-400">
                     {new Date(c.created_at).toLocaleDateString("ja-JP")}

@@ -18,7 +18,7 @@ export default function SearchBox() {
       normalized = trimmed.replace(/[^\d]/g, "");
       if (normalized.length < 10) return;
     }
-    router.push(`/tel/${encodeURIComponent(normalized)}`);
+    router.push(`/tel/${normalized}`);
   }
 
   return (
