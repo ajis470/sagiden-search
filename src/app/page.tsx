@@ -140,8 +140,8 @@ function NumberListSection({
   numbers: string[];
 }) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-1">
+    <section className="bg-gray-50 rounded-2xl border border-gray-200 shadow-md px-6 py-6">
+      <div className="flex items-center gap-2 mb-1 pl-3 border-l-4 border-red-400">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
       </div>
@@ -152,7 +152,7 @@ function NumberListSection({
           <Link
             key={number}
             href={toTelUrl(number)}
-            className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors"
+            className="rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors"
           >
             {number}
           </Link>
@@ -176,8 +176,8 @@ function RankingSection({
   showCount?: boolean;
 }) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-4">
+    <section className="bg-gray-50 rounded-2xl border border-gray-200 shadow-md px-6 py-6">
+      <div className="flex items-center gap-2 mb-4 pl-3 border-l-4 border-red-400">
         <span className="text-xl">{icon}</span>
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         {subtitle && <span className="text-sm text-gray-400">（{subtitle}）</span>}
@@ -187,7 +187,7 @@ function RankingSection({
           <li key={item.number}>
             <Link
               href={toTelUrl(item.number)}
-              className="flex items-center gap-4 rounded-xl bg-white border border-gray-200 px-5 py-4 hover:border-red-300 hover:shadow-sm transition-all"
+              className="flex items-center gap-4 rounded-xl bg-white border border-gray-200 px-5 py-4 hover:border-red-300 hover:shadow-md transition-all"
             >
               <span className="text-2xl font-bold text-gray-300 w-7 shrink-0">
                 {i + 1}

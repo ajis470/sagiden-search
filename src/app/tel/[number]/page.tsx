@@ -59,7 +59,7 @@ export default async function TelPage({ params, searchParams }: Props) {
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 flex flex-col gap-8">
         {/* 番号・危険度 */}
-        <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+        <section className="bg-white rounded-2xl border border-gray-200 shadow-md px-6 py-6 flex flex-col gap-4">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-3xl font-bold text-gray-900 tracking-wider">
               {number}
@@ -73,7 +73,7 @@ export default async function TelPage({ params, searchParams }: Props) {
         </section>
 
         {/* まとめ */}
-        <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+        <section className="bg-white rounded-2xl border border-gray-200 shadow-md px-6 py-6 flex flex-col gap-4">
           <h2 className="font-bold text-lg text-gray-900">この番号について</h2>
           {summary?.summary ? (
             <p className="text-gray-700 leading-7">{summary.summary}</p>
@@ -92,7 +92,7 @@ export default async function TelPage({ params, searchParams }: Props) {
 
         {/* みんなから集まった情報 */}
         {summary?.highlights && summary.highlights.length > 0 && (
-          <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+          <section className="bg-white rounded-2xl border border-gray-200 shadow-md px-6 py-6 flex flex-col gap-4">
             <h2 className="font-bold text-lg text-gray-900">みんなから集まったこの番号に対する情報</h2>
             <ul className="flex flex-col gap-3">
               {summary.highlights.map((h, i) => (
@@ -115,7 +115,7 @@ export default async function TelPage({ params, searchParams }: Props) {
               {phone.comments.map((c) => (
                 <li
                   key={c.id}
-                  className="bg-white rounded-xl border border-gray-200 px-5 py-4"
+                  className="bg-white rounded-xl border border-gray-200 shadow-md px-5 py-4"
                 >
                   {c.status === "pending" ? (
                     <p className="text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">この口コミは審査中です</p>
@@ -134,7 +134,7 @@ export default async function TelPage({ params, searchParams }: Props) {
         </section>
 
         {/* 口コミ投稿 */}
-        <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+        <section className="bg-white rounded-2xl border border-gray-200 shadow-md px-6 py-6 flex flex-col gap-4">
           <h2 className="font-bold text-lg text-gray-900">口コミを投稿する</h2>
           <p className="text-sm text-gray-500">
             誹謗中傷・個人情報を含む投稿は掲載されません。

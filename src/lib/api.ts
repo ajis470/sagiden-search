@@ -64,26 +64,23 @@ export async function fetchTrending(period: TrendingPeriod = "24h", limit = 20):
 }
 
 export async function fetchPhone(number: string): Promise<PhoneNumber | null> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/api_phone.php?number=${encodeURIComponent(number)}`,
-      { headers, cache: "no-store" }
-    );
-    if (!res.ok) return null;
-    const json = await res.json();
-    const d = json.data;
-    if (!d) return null;
-    return {
-      number: d.phone_number,
-      danger_rank: d.danger_rank ?? d.ai_summary?.danger_rank ?? null,
-      comment_count: Number(d.comment_count),
-      search_count_24h: Number(d.search_count_24h),
-      ai_summary: d.ai_summary ?? null,
-      comments: d.comments ?? [],
-    };
-  } catch {
-    return null;
-  }
+  const res = await fetch(
+    `${API_BASE}/api_phone.php?number=${encodeURIComponent(number)}`,
+    { headers, cache: "no-store" }
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  const json = await res.json();
+  const d = json.data;
+  if (!d) return null;
+  return {
+    number: d.phone_number,
+    danger_rank: d.danger_rank ?? d.ai_summary?.danger_rank ?? null,
+    comment_count: Number(d.comment_count),
+    search_count_24h: Number(d.search_count_24h),
+    ai_summary: d.ai_summary ?? null,
+    comments: d.comments ?? [],
+  };
 }
 
 export async function fetchLists(): Promise<{ recent: string[]; wanted: string[] }> {
