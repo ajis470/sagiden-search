@@ -13,7 +13,8 @@ export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ number: string }>; searchParams: Promise<{ admin?: string }> };
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-  const { number } = await params;
+  const { number: rawNumber } = await params;
+  const number = rawNumber.startsWith("plus") ? "+" + rawNumber.slice(4) : rawNumber;
   const { admin } = await searchParams;
   const phone = await fetchPhone(number);
   const formatted = formatNumber(number);
@@ -27,7 +28,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function TelPage({ params, searchParams }: Props) {
-  const { number } = await params;
+  const { number: rawNumber } = await params;
+  const number = rawNumber.startsWith("plus") ? "+" + rawNumber.slice(4) : rawNumber;
   const { admin } = await searchParams;
   const isAdmin = !!admin && admin === process.env.ADMIN_KEY;
   const phone = await fetchPhone(number);

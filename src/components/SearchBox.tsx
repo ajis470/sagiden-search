@@ -18,7 +18,8 @@ export default function SearchBox() {
       normalized = trimmed.replace(/[^\d]/g, "");
       if (normalized.length < 10) return;
     }
-    router.push(`/tel/${normalized}`);
+    const urlSafe = normalized.startsWith("+") ? "plus" + normalized.slice(1) : normalized;
+    router.push(`/tel/${urlSafe}`);
   }
 
   return (
