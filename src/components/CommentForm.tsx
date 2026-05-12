@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -12,6 +12,22 @@ export default function CommentForm({ number }: Props) {
   const [body, setBody] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "done_published" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  function insertDateTime() {
+    const now = new Date();
+    const text = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}着信\n`;
+    const el = textareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? 0;
+    const end = el.selectionEnd ?? 0;
+    const newBody = body.slice(0, start) + text + body.slice(end);
+    setBody(newBody);
+    setTimeout(() => {
+      el.selectionStart = el.selectionEnd = start + text.length;
+      el.focus();
+    }, 0);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,13 +70,23 @@ export default function CommentForm({ number }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        placeholder="できるだけわかりやすく書いていただけると、みんなの役に立ちます。"
-        rows={4}
-        className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-base focus:border-red-500 focus:outline-none resize-none"
-      />
+      <div className="relative">
+        <textarea
+          ref={textareaRef}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder="できるだけわかりやすく書いていただけると、みんなの役に立ちます。"
+          rows={4}
+          className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-base focus:border-red-500 focus:outline-none resize-none"
+        />
+        <button
+          type="button"
+          onClick={insertDateTime}
+          className="absolute bottom-2 right-2 rounded-lg bg-gray-100 px-3 py-1 text-xs text-gray-500 hover:bg-gray-200"
+        >
+          着信日時を挿入
+        </button>
+      </div>
       {status === "error" && (
         <p className="text-sm text-red-600">{errorMsg}</p>
       )}
