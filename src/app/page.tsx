@@ -2,14 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import SearchBox from "@/components/SearchBox";
 import DangerBadge from "@/components/DangerBadge";
-import { fetchTrending, type TrendingNumber } from "@/lib/api";
+import { fetchTrending, fetchLists, type TrendingNumber } from "@/lib/api";
 
 export default async function Home() {
-  const [danger, weekly, monthly, daily] = await Promise.all([
+  const [danger, weekly, monthly, daily, lists] = await Promise.all([
     fetchTrending("danger", 10),
     fetchTrending("7d", 10),
     fetchTrending("30d", 10),
     fetchTrending("24h", 10),
+    fetchLists(),
   ]);
 
   return (
@@ -91,6 +92,24 @@ export default async function Home() {
             items={monthly}
           />
         )}
+        {/* 最近情報が更新された番号 */}
+        {lists.recent.length > 0 && (
+          <NumberListSection
+            icon="🆕"
+            title="最近情報が更新された番号"
+            numbers={lists.recent}
+          />
+        )}
+
+        {/* 情報募集中の番号 */}
+        {lists.wanted.length > 0 && (
+          <NumberListSection
+            icon="🙋"
+            title="情報募集中の番号"
+            subtitle="口コミ・着信情報をお持ちの方はぜひ投稿してください"
+            numbers={lists.wanted}
+          />
+        )}
       </main>
 
       <footer className="border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-400">
@@ -102,6 +121,44 @@ export default async function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function toTelUrl(number: string) {
+  return `/tel/${number.startsWith("+") ? "plus" + number.slice(1) : number}`;
+}
+
+function NumberListSection({
+  icon,
+  title,
+  subtitle,
+  numbers,
+}: {
+  icon: string;
+  title: string;
+  subtitle?: string;
+  numbers: string[];
+}) {
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-xl">{icon}</span>
+        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+      </div>
+      {subtitle && <p className="text-sm text-gray-400 mb-4">{subtitle}</p>}
+      {!subtitle && <div className="mb-4" />}
+      <div className="flex flex-wrap gap-2">
+        {numbers.map((number) => (
+          <Link
+            key={number}
+            href={toTelUrl(number)}
+            className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors"
+          >
+            {number}
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -129,7 +186,7 @@ function RankingSection({
         {items.map((item, i) => (
           <li key={item.number}>
             <Link
-              href={`/tel/${item.number}`}
+              href={toTelUrl(item.number)}
               className="flex items-center gap-4 rounded-xl bg-white border border-gray-200 px-5 py-4 hover:border-red-300 hover:shadow-sm transition-all"
             >
               <span className="text-2xl font-bold text-gray-300 w-7 shrink-0">

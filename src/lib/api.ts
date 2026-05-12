@@ -86,6 +86,23 @@ export async function fetchPhone(number: string): Promise<PhoneNumber | null> {
   }
 }
 
+export async function fetchLists(): Promise<{ recent: string[]; wanted: string[] }> {
+  try {
+    const res = await fetch(`${API_BASE}/api_lists.php`, {
+      headers,
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return { recent: [], wanted: [] };
+    const json = await res.json();
+    return {
+      recent: json.recent ?? [],
+      wanted: json.wanted ?? [],
+    };
+  } catch {
+    return { recent: [], wanted: [] };
+  }
+}
+
 export async function postComment(number: string, body: string): Promise<{ ok: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/api_comment.php`, {
