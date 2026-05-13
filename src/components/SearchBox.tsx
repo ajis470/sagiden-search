@@ -16,7 +16,13 @@ export default function SearchBox() {
       if (normalized.length < 8) return;
     } else {
       normalized = trimmed.replace(/[^\d]/g, "");
-      if (normalized.length < 10) return;
+      if (!normalized.startsWith("0")) {
+        // 0始まりでない=国際番号
+        normalized = "+" + normalized;
+        if (normalized.length < 8) return;
+      } else {
+        if (normalized.length < 10) return;
+      }
     }
     const urlSafe = normalized.startsWith("+") ? "plus" + normalized.slice(1) : normalized;
     router.push(`/tel/${urlSafe}`);

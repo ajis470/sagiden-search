@@ -22,6 +22,15 @@ function buildJpnumberUrl(number) {
   if (number.length === 10 && /^(0120|0800|0570|0990)/.test(number)) {
     return `https://www.jpnumber.com/freedial/numberinfo_${number.slice(0,4)}_${number.slice(4,7)}_${number.slice(7)}.html`;
   }
+  if (number.length === 10 && number.startsWith('0')) {
+    if (/^(03|06)/.test(number)) {
+      return `https://www.jpnumber.com/numberinfo_${number.slice(0,2)}_${number.slice(2,6)}_${number.slice(6)}.html`;
+    }
+    if (/^(011|017|018|019|022|023|024|025|026|027|028|029|042|043|044|045|046|047|048|049|052|053|054|055|058|059|072|073|074|075|076|077|078|079|082|083|084|086|087|088|089|092|093|095|096|097|098|099)/.test(number)) {
+      return `https://www.jpnumber.com/numberinfo_${number.slice(0,3)}_${number.slice(3,6)}_${number.slice(6)}.html`;
+    }
+    return `https://www.jpnumber.com/numberinfo_${number.slice(0,4)}_${number.slice(4,6)}_${number.slice(6)}.html`;
+  }
   return null;
 }
 
