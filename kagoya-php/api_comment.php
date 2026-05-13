@@ -15,10 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$secret  = $_SERVER['HTTP_X_API_SECRET'] ?? ($input['secret'] ?? '');
-$raw     = $input['phone_number'] ?? '';
-$body    = trim($input['body']    ?? '');
-$status  = $input['status']       ?? 'pending'; // published or pending
+$secret    = $_SERVER['HTTP_X_API_SECRET'] ?? ($input['secret'] ?? '');
+$raw       = $input['phone_number'] ?? '';
+$body      = trim($input['body']    ?? '');
+$status    = $input['status']       ?? 'pending'; // published or pending
+$valid_call_types = ['call', 'sms', 'missed', 'voicemail'];
+$call_type = in_array($input['call_type'] ?? '', $valid_call_types) ? $input['call_type'] : null;
 
 if ($secret !== API_SECRET) {
     json_response(['status' => 'error', 'message' => 'Unauthorized'], 401);
@@ -57,8 +59,8 @@ if (!$phone_id) {
 // コメントINSERT（重複は無視）
 $body_hash = md5($body);
 try {
-    $pdo->prepare('INSERT INTO sagiden_comments (phone_number_id, body, body_hash, status, source) VALUES (?, ?, ?, ?, "user")')
-        ->execute([$phone_id, $body, $body_hash, $status]);
+    $pdo->prepare('INSERT INTO sagiden_comments (phone_number_id, body, body_hash, status, source, call_type) VALUES (?, ?, ?, ?, "user", ?)')
+        ->execute([$phone_id, $body, $body_hash, $status, $call_type]);
 } catch (\PDOException $e) {
     if ($e->errorInfo[1] === 1062) { // Duplicate entry
         json_response(['status' => 'success']);

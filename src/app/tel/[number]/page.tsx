@@ -117,6 +117,11 @@ export default async function TelPage({ params, searchParams }: Props) {
                   key={c.id}
                   className="bg-white rounded-xl border border-gray-200 px-5 py-4"
                 >
+                  {c.call_type && (
+                    <span className="inline-block mb-2 text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                      {{ call: "通話", sms: "SMS", missed: "不在着信", voicemail: "留守電" }[c.call_type]}
+                    </span>
+                  )}
                   {c.status === "pending" ? (
                     <p className="text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">この口コミは審査中です</p>
                   ) : (

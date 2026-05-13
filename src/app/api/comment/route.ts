@@ -24,6 +24,7 @@ async function moderate(body: string): Promise<"published" | "pending"> {
 - 電話の内容・手口・状況の説明
 - 感情的な表現・悪口・怒りの言葉も含む体験報告
 - 「詐欺」「しつこい」「迷惑」「出るな」等の警告
+- 「不在着信がありました」「電話がありました」などの短い事実報告（着信の存在を知らせるだけでも有益な情報）
 
 【口コミ】
 ${body}
@@ -45,13 +46,15 @@ ${body}
 }
 
 export async function POST(req: NextRequest) {
-  const { number, body } = await req.json();
+  const { number, body, call_type } = await req.json();
   if (!number || !body?.trim()) {
     return NextResponse.json({ message: "入力内容を確認してください" }, { status: 400 });
   }
   if ([...body].length < 5 || [...body].length > 1000) {
     return NextResponse.json({ message: "本文は5〜1000文字で入力してください" }, { status: 400 });
   }
+  const validCallTypes = ["call", "sms", "missed", "voicemail"];
+  const sanitizedCallType = validCallTypes.includes(call_type) ? call_type : null;
 
   const now = Date.now();
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -75,7 +78,7 @@ export async function POST(req: NextRequest) {
       "X-API-Secret": API_SECRET,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ phone_number: number, body, status }),
+    body: JSON.stringify({ phone_number: number, body, status, call_type: sanitizedCallType }),
   });
 
   const json = await res.json();

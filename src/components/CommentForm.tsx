@@ -7,9 +7,18 @@ type Props = {
   number: string;
 };
 
+const CALL_TYPES = [
+  { value: "", label: "種別" },
+  { value: "call", label: "通話" },
+  { value: "sms", label: "SMS" },
+  { value: "missed", label: "不在着信" },
+  { value: "voicemail", label: "留守電" },
+] as const;
+
 export default function CommentForm({ number }: Props) {
   const router = useRouter();
   const [body, setBody] = useState("");
+  const [callType, setCallType] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "done_published" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,13 +46,14 @@ export default function CommentForm({ number }: Props) {
     const res = await fetch("/api/comment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ number, body }),
+      body: JSON.stringify({ number, body, call_type: callType || null }),
     });
 
     if (res.ok) {
       const json = await res.json().catch(() => ({}));
       setStatus(json.status_moderation === "published" ? "done_published" : "done");
       setBody("");
+      setCallType("");
       router.refresh();
     } else {
       const json = await res.json().catch(() => ({}));
@@ -70,6 +80,22 @@ export default function CommentForm({ number }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
+        <span className="text-sm text-gray-500">通信種別：</span>
+        {CALL_TYPES.map(({ value, label }) => (
+          <label key={value} className="flex items-center gap-1 cursor-pointer">
+            <input
+              type="radio"
+              name="call_type"
+              value={value}
+              checked={callType === value}
+              onChange={() => setCallType(value)}
+              className="accent-red-600"
+            />
+            <span className="text-sm text-gray-700">{label}</span>
+          </label>
+        ))}
+      </div>
       <div className="flex flex-col gap-1">
         <div>
           <button

@@ -32,11 +32,14 @@ export type PhoneNumber = {
   comments: Comment[];
 };
 
+export type CallType = "call" | "sms" | "missed" | "voicemail";
+
 export type Comment = {
   id: number;
   body: string;
   source: "user" | "scraped";
   status: "published" | "pending";
+  call_type: CallType | null;
   created_at: string;
 };
 

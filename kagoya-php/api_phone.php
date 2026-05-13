@@ -58,7 +58,7 @@ $pdo->prepare('UPDATE sagiden_phone_numbers SET search_count_24h = ?, last_searc
     ->execute([$count_24h, $phone_id]);
 
 // コメント（ユーザー投稿のみ。published + pending を返す。スクレーピング分は要約生成の材料としてのみ使用）
-$stmt = $pdo->prepare('SELECT id, body, source, status, created_at FROM sagiden_comments WHERE phone_number_id = ? AND source = "user" AND status IN ("published", "pending") ORDER BY created_at DESC');
+$stmt = $pdo->prepare('SELECT id, body, source, status, call_type, created_at FROM sagiden_comments WHERE phone_number_id = ? AND source = "user" AND status IN ("published", "pending") ORDER BY created_at DESC');
 $stmt->execute([$phone_id]);
 $sagiden_comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
