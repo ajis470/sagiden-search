@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
 
@@ -66,7 +68,7 @@ export async function fetchTrending(period: TrendingPeriod = "24h", limit = 20):
   }
 }
 
-export async function fetchPhone(number: string): Promise<PhoneNumber | null> {
+export const fetchPhone = cache(async function fetchPhone(number: string): Promise<PhoneNumber | null> {
   try {
     const res = await fetch(
       `${API_BASE}/api_phone.php?number=${encodeURIComponent(number)}`,
@@ -87,7 +89,7 @@ export async function fetchPhone(number: string): Promise<PhoneNumber | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function fetchLists(): Promise<{ recent: string[]; wanted: string[] }> {
   try {
