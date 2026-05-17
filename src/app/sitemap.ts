@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const res = await fetch(`${API_BASE}/api_sitemap.php`, {
       headers: { "X-API-Secret": API_SECRET },
-      next: { revalidate: 86400 }, // 1日キャッシュ
+      next: { revalidate: 3600 },
     });
     if (!res.ok) return staticPages;
 
