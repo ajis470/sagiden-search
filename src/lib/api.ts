@@ -91,20 +91,19 @@ export const fetchPhone = cache(async function fetchPhone(number: string): Promi
   }
 });
 
-export async function fetchLists(): Promise<{ recent: string[]; wanted: string[] }> {
+export async function fetchLists(): Promise<{ newArrivals: string[] }> {
   try {
     const res = await fetch(`${API_BASE}/api_lists.php`, {
       headers,
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return { recent: [], wanted: [] };
+    if (!res.ok) return { newArrivals: [] };
     const json = await res.json();
     return {
-      recent: json.recent ?? [],
-      wanted: json.wanted ?? [],
+      newArrivals: json.new_arrivals ?? [],
     };
   } catch {
-    return { recent: [], wanted: [] };
+    return { newArrivals: [] };
   }
 }
 

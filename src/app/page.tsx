@@ -5,7 +5,7 @@ import DangerBadge from "@/components/DangerBadge";
 import { fetchTrending, fetchLists, type TrendingNumber } from "@/lib/api";
 
 export default async function Home() {
-  const [danger, weekly, monthly, daily, lists] = await Promise.all([
+  const [danger, weekly, monthly, daily, { newArrivals }] = await Promise.all([
     fetchTrending("danger", 10),
     fetchTrending("7d", 10),
     fetchTrending("30d", 10),
@@ -92,22 +92,13 @@ export default async function Home() {
             items={monthly}
           />
         )}
-        {/* 最近情報が更新された番号 */}
-        {lists.recent.length > 0 && (
+        {/* 新着番号 */}
+        {newArrivals.length > 0 && (
           <NumberListSection
             icon="🆕"
-            title="最近情報が更新された番号"
-            numbers={lists.recent}
-          />
-        )}
-
-        {/* 情報募集中の番号 */}
-        {lists.wanted.length > 0 && (
-          <NumberListSection
-            icon="🙋"
-            title="情報募集中の番号"
-            subtitle="口コミ・着信情報をお持ちの方はぜひ投稿してください"
-            numbers={lists.wanted}
+            title="新着番号"
+            subtitle="新たに情報が集まった番号"
+            numbers={newArrivals}
           />
         )}
       </main>

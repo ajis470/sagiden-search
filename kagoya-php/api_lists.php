@@ -12,24 +12,14 @@ $pdo = get_db();
 
 $stmt = $pdo->query('
     SELECT pn.phone_number
-    FROM sagiden_ai_summaries s
-    JOIN sagiden_phone_numbers pn ON pn.id = s.phone_number_id
-    ORDER BY s.generated_at DESC
+    FROM sagiden_phone_numbers pn
+    JOIN sagiden_ai_summaries s ON s.phone_number_id = pn.id
+    ORDER BY pn.created_at DESC
     LIMIT 20
 ');
-$recent = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'phone_number');
-
-$stmt = $pdo->query('
-    SELECT phone_number
-    FROM sagiden_phone_numbers
-    WHERE comment_count <= 1
-    ORDER BY last_searched_at DESC
-    LIMIT 20
-');
-$wanted = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'phone_number');
+$new_arrivals = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'phone_number');
 
 json_response([
-    'status' => 'success',
-    'recent' => $recent,
-    'wanted' => $wanted,
+    'status'       => 'success',
+    'new_arrivals' => $new_arrivals,
 ]);
