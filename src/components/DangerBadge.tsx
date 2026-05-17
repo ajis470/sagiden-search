@@ -21,9 +21,10 @@ const labels: Record<DangerRank, string> = {
 type Props = {
   rank: DangerRank | null;
   showLabel?: boolean;
+  showPrefix?: boolean;
 };
 
-export default function DangerBadge({ rank, showLabel = false }: Props) {
+export default function DangerBadge({ rank, showLabel = false, showPrefix = false }: Props) {
   if (!rank) {
     return (
       <span className="inline-flex items-center rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-600">
@@ -34,6 +35,9 @@ export default function DangerBadge({ rank, showLabel = false }: Props) {
 
   return (
     <span className="inline-flex items-center gap-2 flex-wrap">
+      {showPrefix && (
+        <span className="text-sm text-gray-500">危険度：</span>
+      )}
       <span
         className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold ${styles[rank]}`}
       >

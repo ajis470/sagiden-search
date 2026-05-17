@@ -188,7 +188,7 @@ function RankingSection({
                   <span className="font-bold text-gray-900 text-lg">
                     {item.number}
                   </span>
-                  <DangerBadge rank={item.danger_rank} />
+                  <DangerBadge rank={item.danger_rank} showPrefix showLabel />
                 </div>
                 {item.summary && (
                   <p className="text-sm text-gray-500 mt-1 truncate">

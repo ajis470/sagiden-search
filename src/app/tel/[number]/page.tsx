@@ -21,8 +21,18 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const rank = phone?.danger_rank ?? "判定中";
   const count = phone?.comment_count ?? 0;
   const isAdmin = admin === process.env.ADMIN_KEY;
+  const summary = phone?.ai_summary?.summary;
+  const rankLabels: Record<string, string> = {
+    C: "正規・情報不足", B: "軽度の迷惑電話", A: "悪質な迷惑電話",
+    S: "詐欺電話の疑いあり", SS: "詐欺の前兆・要注意", SSS: "特殊詐欺・非常に危険",
+  };
+  const rankLabel = rank !== "判定中" ? `　${rankLabels[rank]}` : "";
+  const description = summary
+    ? `危険度：${rank}${rankLabel}。${summary}`
+    : `危険度：${rank}${rankLabel}。口コミ${count > 0 ? count : 0}件。${formatted}への着信情報・口コミをまとめています。`;
   return {
     title: `${formatted}｜危険度：${rank}｜口コミ ${count > 0 ? count : "-"}件 - みんなの迷惑電話番号データベース`,
+    description,
     ...(isAdmin && { robots: { index: false, follow: false } }),
   };
 }
