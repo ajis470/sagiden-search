@@ -22,13 +22,14 @@ type Props = {
   rank: DangerRank | null;
   showLabel?: boolean;
   showPrefix?: boolean;
+  noData?: boolean;
 };
 
-export default function DangerBadge({ rank, showLabel = false, showPrefix = false }: Props) {
+export default function DangerBadge({ rank, showLabel = false, showPrefix = false, noData = false }: Props) {
   if (!rank) {
     return (
       <span className="inline-flex items-center rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-600">
-        判定中
+        {noData ? "情報募集中" : "判定中"}
       </span>
     );
   }

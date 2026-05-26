@@ -86,7 +86,20 @@ async function main() {
     console.log(`処理中: ${entry.phone_number}（コメント${entry.comments.length}件）`);
 
     if (entry.comments.length === 0) {
-      console.log('  コメントなし、スキップ');
+      // コメントが一件もない（タイプミス番号等）→ needs_resummary=0にリセットして滞留を解消
+      console.log('  コメントなし → needs_resummary リセット');
+      await fetch(`${API_BASE}/api_scrape.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          secret: API_SECRET,
+          phone_number: entry.phone_number,
+          comments: [],
+          source: 'scraped',
+          source_site: 'jpnumber.com',
+          reset_resummary: true,
+        }),
+      });
       continue;
     }
 
@@ -113,6 +126,23 @@ async function main() {
 
     } catch (e) {
       console.error(`  エラー: ${e.message}`);
+
+      // Geminiの安全フィルターに弾かれた場合はフォールバック要約を保存してリトライを止める
+      if (e.message && e.message.includes('PROHIBITED_CONTENT')) {
+        console.log('  → PROHIBITED_CONTENT: フォールバック要約を保存');
+        await fetch(`${API_BASE}/api_summary.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret:             API_SECRET,
+            phone_number_id:    entry.id,
+            summary:            '口コミの内容により自動判定できませんでした。',
+            recommended_action: '不審に感じた場合は着信拒否も選択肢の一つです。',
+            danger_rank:        'C',
+            highlights:         [],
+          }),
+        });
+      }
     }
 
     await sleep(1000); // Gemini APIレート制限対策

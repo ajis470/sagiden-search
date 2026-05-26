@@ -76,7 +76,7 @@ export default async function TelPage({ params, searchParams }: Props) {
             </h1>
             <span className="flex items-center gap-2 flex-wrap">
               <Link href="/danger-rank" className="text-sm text-gray-500 hover:underline">危険度：</Link>
-              <DangerBadge rank={rank} showLabel />
+              <DangerBadge rank={rank} showLabel noData={!rank && phone.comments.length === 0} />
               <DangerRankPopover />
             </span>
           </div>

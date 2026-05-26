@@ -69,6 +69,13 @@ foreach ($comments as $body) {
     $inserted++;
 }
 
+// reset_resummary=true の場合はneeds_resummary=0にリセットして終了（コメント0件番号の滞留解消用）
+if (!empty($input['reset_resummary'])) {
+    $pdo->prepare('UPDATE sagiden_phone_numbers SET needs_resummary = 0 WHERE id = ?')
+        ->execute([$phone_id]);
+    json_response(['status' => 'success', 'action' => 'reset_resummary']);
+}
+
 // comment_count を更新。force_resummary=true の場合は件数に関わらずフラグをセット
 $force_resummary = !empty($input['force_resummary']);
 if ($inserted > 0 || $force_resummary) {
