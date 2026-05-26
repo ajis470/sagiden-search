@@ -81,46 +81,20 @@ ${commentText}
 
 export async function triggerResummarize(number: string) {
   try {
-    // 1. jpnumber.com の個別ページをスクレイプ
-    const jpUrl = buildJpnumberUrl(number);
-    if (jpUrl) {
-      const jpRes = await fetch(jpUrl, {
-        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" },
-        signal: AbortSignal.timeout(10000),
-      });
-      if (jpRes.ok) {
-        const html = await jpRes.text();
-        const scraped = parseJpnumberComments(html);
-        // スクレイプ結果の有無に関わらず force_resummary=true でフラグをセット
-        await fetch(`${API_BASE}/api_scrape.php`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            secret: API_SECRET,
-            phone_number: number,
-            comments: scraped,
-            source: "scraped",
-            source_site: "jpnumber.com",
-            force_resummary: true,
-          }),
-        });
-        console.log(`[resummary] jpnumber scraped: ${scraped.length}件`);
-      }
-    } else {
-      // URL構築不可の番号も needs_resummary=1 をセット（既存コメントで要約）
-      await fetch(`${API_BASE}/api_scrape.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          secret: API_SECRET,
-          phone_number: number,
-          comments: [],
-          source: "scraped",
-          source_site: "jpnumber.com",
-          force_resummary: true,
-        }),
-      });
-    }
+    // 1. needs_resummary=1 をセット（jpnumber.comはVercelからCloudflareで弾かれるためスキップ）
+    await fetch(`${API_BASE}/api_scrape.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        secret: API_SECRET,
+        phone_number: number,
+        comments: [],
+        source: "scraped",
+        source_site: "jpnumber.com",
+        force_resummary: true,
+      }),
+    });
+    console.log(`[resummary] ${number}: needs_resummary セット`);
 
     // 2. needs_resummary=1 の番号一覧から対象を取得
     const pendingRes = await fetch(`${API_BASE}/api_pending.php?secret=${API_SECRET}&limit=50`);
