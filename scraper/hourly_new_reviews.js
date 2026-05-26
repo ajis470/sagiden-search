@@ -11,12 +11,32 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const API_BASE      = 'https://api.sagiden-search.com';
-const API_SECRET    = 'sgd_2026_xK9mPqR4vLzN';
+const API_BASE        = 'https://api.sagiden-search.com';
+const API_SECRET      = 'sgd_2026_xK9mPqR4vLzN';
 const NEW_REVIEWS_URL = 'https://www.jpnumber.com/newcomment/';
 const LAST_SEEN_PATH  = path.join(__dirname, 'last_seen.json');
-const DELAY_MS      = 2000;
+const DELAY_MS        = 2000;
+const UNSCRAPED_LIMIT = 15; // 1回あたり最大処理件数
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function buildJpnumberUrl(number) {
+  if (number.length === 11 && /^(090|080|070|050)/.test(number)) {
+    return `https://www.jpnumber.com/numberinfo_${number.slice(0,3)}_${number.slice(3,7)}_${number.slice(7)}.html`;
+  }
+  if (number.length === 10 && /^(0120|0800|0570|0990)/.test(number)) {
+    return `https://www.jpnumber.com/freedial/numberinfo_${number.slice(0,4)}_${number.slice(4,7)}_${number.slice(7)}.html`;
+  }
+  if (number.length === 10 && number.startsWith('0')) {
+    if (/^(03|06)/.test(number)) {
+      return `https://www.jpnumber.com/numberinfo_${number.slice(0,2)}_${number.slice(2,6)}_${number.slice(6)}.html`;
+    }
+    if (/^(011|017|018|019|022|023|024|025|026|027|028|029|042|043|044|045|046|047|048|049|052|053|054|055|058|059|072|073|074|075|076|077|078|079|082|083|084|086|087|088|089|092|093|095|096|097|098|099)/.test(number)) {
+      return `https://www.jpnumber.com/numberinfo_${number.slice(0,3)}_${number.slice(3,6)}_${number.slice(6)}.html`;
+    }
+    return `https://www.jpnumber.com/numberinfo_${number.slice(0,4)}_${number.slice(4,6)}_${number.slice(6)}.html`;
+  }
+  return null;
+}
 
 function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
@@ -95,7 +115,7 @@ async function main() {
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     locale: 'ja-JP',
   });
-  const page = await context.newPage();
+  let page = await context.newPage();
 
   let newCount = 0;
 
@@ -143,6 +163,48 @@ async function main() {
 
     // 今回の番号リストを保存
     saveLastSeen(currentNumbers);
+
+    // 未スクレイプ番号の処理（ページ作成済み・コメント投稿済みだがjpnumber未取得の番号）
+    try {
+      const unscrapedRes = await fetch(`${API_BASE}/api_unscraped.php?secret=${API_SECRET}&limit=${UNSCRAPED_LIMIT}`);
+      const unscrapedJson = await unscrapedRes.json();
+      const unscrapedNumbers = unscrapedJson.data ?? [];
+      if (unscrapedNumbers.length > 0) {
+        log(`未スクレイプ番号: ${unscrapedNumbers.length}件`);
+        for (const number of unscrapedNumbers) {
+          const url = buildJpnumberUrl(number);
+          let comments = [];
+          if (url) {
+            try {
+              comments = await fetchComments(page, url, number);
+              log(`  ${number}: ${comments.length}件取得`);
+            } catch (e) {
+              log(`  ${number}: スクレイプ失敗 (${e.message}) → ページ再生成`);
+              try { await page.close(); } catch {}
+              page = await context.newPage();
+            }
+          } else {
+            log(`  ${number}: URL構築不可`);
+          }
+          await fetch(`${API_BASE}/api_scrape.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              secret: API_SECRET,
+              phone_number: number,
+              comments,
+              source: 'scraped',
+              source_site: 'jpnumber.com',
+              force_resummary: true,
+            }),
+          });
+          newCount++;
+          await sleep(DELAY_MS);
+        }
+      }
+    } catch (e) {
+      log(`未スクレイプ処理エラー: ${e.message}`);
+    }
 
   } catch (e) {
     log(`エラー: ${e.message}`);

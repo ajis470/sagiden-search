@@ -78,7 +78,7 @@ async function main() {
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     locale: 'ja-JP',
   });
-  const page = await context.newPage();
+  let page = await context.newPage();
 
   try {
     for (const number of json.data) {
@@ -102,7 +102,16 @@ async function main() {
       }
 
       console.log(`処理中: ${number}`);
-      const comments = await fetchComments(page, url, number);
+      let comments = [];
+      try {
+        comments = await fetchComments(page, url, number);
+      } catch (e) {
+        console.error(`  クラッシュ: ${e.message} → ページ再生成して続行`);
+        // クラッシュしたページを捨てて新しいページを作り直す
+        try { await page.close(); } catch {}
+        page = await context.newPage();
+        // この番号はスキップせず空コメントでforce_resummaryだけセット
+      }
       console.log(`  ${comments.length}件取得`);
 
       const postRes = await fetch(`${API_BASE}/api_scrape.php`, {
