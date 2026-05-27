@@ -48,7 +48,7 @@ ${body}
 }
 
 export async function POST(req: NextRequest) {
-  const { number, body, call_type } = await req.json();
+  const { number, body, call_type, admin_key } = await req.json();
   if (!number || !body?.trim()) {
     return NextResponse.json({ message: "入力内容を確認してください" }, { status: 400 });
   }
@@ -58,18 +58,21 @@ export async function POST(req: NextRequest) {
   const validCallTypes = ["call", "sms", "missed", "voicemail"];
   const sanitizedCallType = validCallTypes.includes(call_type) ? call_type : null;
 
+  const isAdmin = !!admin_key && admin_key === process.env.ADMIN_KEY;
   const now = Date.now();
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  const lastAt = Number(req.cookies.get("last_comment_at")?.value ?? 0);
-  if (now - lastAt < 60 * 1000) {
-    return NextResponse.json({ message: "投稿は1分に1回までです" }, { status: 429 });
-  }
+  if (!isAdmin) {
+    const lastAt = Number(req.cookies.get("last_comment_at")?.value ?? 0);
+    if (now - lastAt < 60 * 1000) {
+      return NextResponse.json({ message: "投稿は1分に1回までです" }, { status: 429 });
+    }
 
-  const dailyRaw = req.cookies.get("comment_dates")?.value ?? "[]";
-  const dailyDates: string[] = JSON.parse(dailyRaw).filter((d: string) => d === todayStr);
-  if (dailyDates.length >= 10) {
-    return NextResponse.json({ message: "1日の投稿上限（10件）に達しました" }, { status: 429 });
+    const dailyRaw = req.cookies.get("comment_dates")?.value ?? "[]";
+    const dailyDates: string[] = JSON.parse(dailyRaw).filter((d: string) => d === todayStr);
+    if (dailyDates.length >= 10) {
+      return NextResponse.json({ message: "1日の投稿上限（10件）に達しました" }, { status: 429 });
+    }
   }
 
   const status = await moderate(body);
@@ -87,16 +90,22 @@ export async function POST(req: NextRequest) {
   const response = NextResponse.json({ ...json, status_moderation: status }, { status: res.status });
 
   if (res.ok && status === "published") {
-    const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };
-    response.cookies.set("last_comment_at", String(now), { ...cookieOpts, maxAge: 60 });
-    const newDates = [...dailyDates, todayStr];
-    response.cookies.set("comment_dates", JSON.stringify(newDates), { ...cookieOpts, maxAge: 60 * 60 * 24 });
+    if (!isAdmin) {
+      const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };
+      const dailyRaw = req.cookies.get("comment_dates")?.value ?? "[]";
+      const dailyDates: string[] = JSON.parse(dailyRaw).filter((d: string) => d === todayStr);
+      response.cookies.set("last_comment_at", String(now), { ...cookieOpts, maxAge: 60 });
+      response.cookies.set("comment_dates", JSON.stringify([...dailyDates, todayStr]), { ...cookieOpts, maxAge: 60 * 60 * 24 });
+    }
     waitUntil(triggerResummarize(number));
   } else if (res.ok) {
-    const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };
-    response.cookies.set("last_comment_at", String(now), { ...cookieOpts, maxAge: 60 });
-    const newDates = [...dailyDates, todayStr];
-    response.cookies.set("comment_dates", JSON.stringify(newDates), { ...cookieOpts, maxAge: 60 * 60 * 24 });
+    if (!isAdmin) {
+      const cookieOpts = { httpOnly: true, path: "/", sameSite: "lax" as const };
+      const dailyRaw = req.cookies.get("comment_dates")?.value ?? "[]";
+      const dailyDates: string[] = JSON.parse(dailyRaw).filter((d: string) => d === todayStr);
+      response.cookies.set("last_comment_at", String(now), { ...cookieOpts, maxAge: 60 });
+      response.cookies.set("comment_dates", JSON.stringify([...dailyDates, todayStr]), { ...cookieOpts, maxAge: 60 * 60 * 24 });
+    }
   }
 
   return response;

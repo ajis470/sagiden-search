@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   number: string;
+  adminKey?: string;
 };
 
 const CALL_TYPES = [
@@ -15,7 +16,7 @@ const CALL_TYPES = [
   { value: "voicemail", label: "留守電" },
 ] as const;
 
-export default function CommentForm({ number }: Props) {
+export default function CommentForm({ number, adminKey }: Props) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [callType, setCallType] = useState("");
@@ -46,7 +47,7 @@ export default function CommentForm({ number }: Props) {
     const res = await fetch("/api/comment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ number, body, call_type: callType || null }),
+      body: JSON.stringify({ number, body, call_type: callType || null, admin_key: adminKey }),
     });
 
     if (res.ok) {

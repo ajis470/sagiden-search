@@ -154,7 +154,7 @@ export default async function TelPage({ params, searchParams }: Props) {
           <p className="text-sm text-gray-500">
             誹謗中傷・個人情報を含む投稿は掲載されません。
           </p>
-          <CommentForm number={number} />
+          <CommentForm number={number} adminKey={isAdmin ? admin : undefined} />
         </section>
       </main>
 
