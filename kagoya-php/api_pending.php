@@ -16,7 +16,9 @@ $pdo = get_db();
 
 $stmt = $pdo->prepare(
     'SELECT id, phone_number, danger_rank FROM sagiden_phone_numbers
-     WHERE needs_resummary = 1 LIMIT ?'
+     WHERE needs_resummary = 1
+     ORDER BY comment_count DESC
+     LIMIT ?'
 );
 $stmt->bindValue(1, $limit, PDO::PARAM_INT);
 $stmt->execute();

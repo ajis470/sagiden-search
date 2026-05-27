@@ -139,8 +139,15 @@ async function main() {
 
       // ③ 新規番号 → コメント取得→登録
       log(`新規番号: ${number}`);
-      const comments = await fetchComments(page, url, number);
-      log(`  ${comments.length}件のコメント取得`);
+      let comments = [];
+      try {
+        comments = await fetchComments(page, url, number);
+        log(`  ${comments.length}件のコメント取得`);
+      } catch (e) {
+        log(`  ${number}: スクレイプ失敗 (${e.message}) → ページ再生成して続行`);
+        try { await page.close(); } catch {}
+        page = await context.newPage();
+      }
 
       const postRes = await fetch(`${API_BASE}/api_scrape.php`, {
         method: 'POST',
