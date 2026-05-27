@@ -17,7 +17,13 @@ $pdo = get_db();
 $stmt = $pdo->prepare(
     'SELECT id, phone_number, danger_rank FROM sagiden_phone_numbers
      WHERE needs_resummary = 1
-     ORDER BY comment_count DESC
+     ORDER BY
+       CASE WHEN comment_count = 0 THEN 1 ELSE 0 END ASC,
+       (SELECT CASE WHEN source = "user" THEN 0 ELSE 1 END FROM sagiden_comments
+        WHERE phone_number_id = sagiden_phone_numbers.id AND status = "published"
+        ORDER BY created_at DESC LIMIT 1) ASC,
+       (SELECT MAX(created_at) FROM sagiden_comments
+        WHERE phone_number_id = sagiden_phone_numbers.id AND status = "published") DESC
      LIMIT ?'
 );
 $stmt->bindValue(1, $limit, PDO::PARAM_INT);
