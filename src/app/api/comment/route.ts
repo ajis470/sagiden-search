@@ -58,7 +58,8 @@ export async function POST(req: NextRequest) {
   const validCallTypes = ["call", "sms", "missed", "voicemail"];
   const sanitizedCallType = validCallTypes.includes(call_type) ? call_type : null;
 
-  const isAdmin = !!admin_key && admin_key === process.env.ADMIN_KEY;
+  const isAdmin = (!!admin_key && admin_key === process.env.ADMIN_KEY)
+    || req.cookies.get("admin_session")?.value === process.env.ADMIN_KEY;
   const now = Date.now();
   const todayStr = new Date().toISOString().slice(0, 10);
 
