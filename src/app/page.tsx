@@ -13,8 +13,19 @@ export default async function Home() {
     fetchLists(),
   ]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "みんなの迷惑電話番号データベース",
+    url: "https://www.sagiden-search.com",
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center gap-2">
           <span className="text-2xl">🚨</span>
