@@ -18,20 +18,16 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { admin } = await searchParams;
   const phone = await fetchPhone(number);
   const formatted = formatNumber(number);
-  const rank = phone?.danger_rank ?? "判定中";
-  const count = phone?.comment_count ?? 0;
+  const rank = phone?.danger_rank ?? null;
+  const displayRank = rank ?? "判定中";
   const isAdmin = admin === process.env.ADMIN_KEY;
   const summary = phone?.ai_summary?.summary;
-  const rankLabels: Record<string, string> = {
-    C: "正規・情報不足", B: "軽度の迷惑電話", A: "悪質な迷惑電話",
-    S: "詐欺電話の疑いあり", SS: "詐欺の前兆・要注意", SSS: "特殊詐欺・非常に危険",
-  };
-  const rankLabel = rank !== "判定中" ? `　${rankLabels[rank]}` : "";
+  const rankLabel = rank ? `　${RANK_LABELS[rank]}` : "";
   const description = summary
-    ? `危険度：${rank}${rankLabel}。${summary}`
-    : `危険度：${rank}${rankLabel}。口コミ${count > 0 ? count : 0}件。${formatted}への着信情報・口コミをまとめています。`;
+    ? `危険度：${displayRank}${rankLabel}。${summary}`
+    : `${formatted}は迷惑電話？危険度・着信時間帯・口コミ・対処法をまとめています。`;
   return {
-    title: `${formatted}｜危険度：${rank}｜口コミ ${count > 0 ? count : "-"}件 - みんなの迷惑電話番号データベース`,
+    title: `${buildHeading(formatted, rank)} - みんなの迷惑電話番号データベース`,
     description,
     ...(isAdmin && { robots: { index: false, follow: false } }),
   };
@@ -52,6 +48,7 @@ export default async function TelPage({ params, searchParams }: Props) {
 
   const rank = phone.danger_rank;
   const summary = phone.ai_summary;
+  const formatted = formatNumber(number);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -71,8 +68,10 @@ export default async function TelPage({ params, searchParams }: Props) {
         {/* 番号・危険度 */}
         <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-3xl font-bold text-gray-900 tracking-wider">
-              {number}
+            {/* H1のテキストは<title>の本文部分と完全一致させる（検索エンジンのタイトル書き換え対策） */}
+            <h1 className="text-gray-900 flex flex-wrap items-baseline gap-x-1">
+              <span className="text-3xl font-bold tracking-wider">{formatted}</span>
+              <span className="text-base font-semibold text-gray-600">{headingSuffix(rank)}</span>
             </h1>
             <span className="flex items-center gap-2 flex-wrap">
               <Link href="/danger-rank" className="text-sm text-gray-500 hover:underline">危険度：</Link>
@@ -167,6 +166,24 @@ export default async function TelPage({ params, searchParams }: Props) {
       </footer>
     </div>
   );
+}
+
+const RANK_LABELS: Record<string, string> = {
+  C: "正規・情報不足", B: "軽度の迷惑電話", A: "悪質な迷惑電話",
+  S: "詐欺電話の疑いあり", SS: "詐欺の前兆・要注意", SSS: "特殊詐欺・非常に危険",
+};
+
+// 番号に続く訴求フレーズ（H1・titleで共通利用）
+function headingSuffix(rank: string | null): string {
+  if (rank && RANK_LABELS[rank]) {
+    return `は迷惑電話？【危険度${rank}：${RANK_LABELS[rank]}】`;
+  }
+  return "は安全？迷惑電話？口コミ・危険度をチェック";
+}
+
+// <title>とH1の本文部分を一致させるための共通文字列
+function buildHeading(formatted: string, rank: string | null): string {
+  return `${formatted}${headingSuffix(rank)}`;
 }
 
 function formatNumber(num: string): string {
