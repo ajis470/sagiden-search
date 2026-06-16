@@ -186,13 +186,8 @@ function buildHeading(formatted: string, rank: string | null): string {
   return `${formatted}${headingSuffix(rank)}`;
 }
 
+// 表示はハイフンなしで統一。桁数だけの誤区切り（0120→012-076-...等）を防ぎ、
+// 連続数字の検索クエリと完全一致させる。国際番号は先頭の+のみ残る
 function formatNumber(num: string): string {
-  if (num.startsWith("+")) return num;
-  if (num.length === 11) {
-    return `${num.slice(0, 3)}-${num.slice(3, 7)}-${num.slice(7)}`;
-  }
-  if (num.length === 10) {
-    return `${num.slice(0, 3)}-${num.slice(3, 6)}-${num.slice(6)}`;
-  }
   return num;
 }
