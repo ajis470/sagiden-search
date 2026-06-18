@@ -11,7 +11,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "みんなの迷惑電話番号データベース",
   description:
-    "電話番号を入力するだけで、危険度・口コミ・対処法をすぐ確認。",
+    "迷惑電話・詐欺電話の番号を検索できる口コミデータベース。番号を入力するだけで危険度ランク・みんなの口コミ・おすすめの対処法をすぐに確認できます。",
 };
 
 export default function RootLayout({

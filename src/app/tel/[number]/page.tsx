@@ -25,7 +25,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const rankLabel = rank ? `　${RANK_LABELS[rank]}` : "";
   const description = summary
     ? `危険度：${displayRank}${rankLabel}。${summary}`
-    : `${formatted}は迷惑電話？危険度・着信時間帯・口コミ・対処法をまとめています。`;
+    : `${formatted}からの着信は迷惑電話・詐欺の可能性？危険度・みんなの口コミ・対処法をまとめています。この着信に危険はないか？安全な番号かどうかの確認にご利用下さい。`;
   return {
     title: `${buildHeading(formatted, rank)} - みんなの迷惑電話番号データベース`,
     description,

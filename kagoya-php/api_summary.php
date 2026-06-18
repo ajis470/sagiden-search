@@ -50,4 +50,12 @@ $pdo->prepare(
     'UPDATE sagiden_phone_numbers SET danger_rank = ?, needs_resummary = 0 WHERE id = ?'
 )->execute([$danger_rank, $phone_number_id]);
 
+// IndexNow へインデックス送信（フロントの番号ページURL）
+$stmt = $pdo->prepare('SELECT phone_number FROM sagiden_phone_numbers WHERE id = ?');
+$stmt->execute([$phone_number_id]);
+$num = $stmt->fetchColumn();
+if ($num) {
+    indexnow_ping(tel_url($num));
+}
+
 json_response(['status' => 'success']);

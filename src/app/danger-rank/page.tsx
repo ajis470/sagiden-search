@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "危険度ランクについて - みんなの迷惑電話番号データベース",
   description:
-    "迷惑電話の危険度ランク（C〜SSS）の意味と判定基準を解説します。",
+    "迷惑電話の危険度ランク（C・B・A・S・SS・SSS）の6段階それぞれの意味と、口コミ件数やAI判定にもとづく評価基準をわかりやすく解説します。",
 };
 
 const ranks = [
