@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://sagiden-search.com";
+const BASE_URL = "https://www.sagiden-search.com";
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
 
