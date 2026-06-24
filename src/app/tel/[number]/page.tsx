@@ -23,9 +23,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const isAdmin = admin === process.env.ADMIN_KEY;
   const summary = phone?.ai_summary?.summary;
   const rankLabel = rank ? `　${RANK_LABELS[rank]}` : "";
-  const description = summary
-    ? `危険度：${displayRank}${rankLabel}。${summary}`
+  const baseDesc = summary
+    ? `${formatted}の危険度：${displayRank}${rankLabel}。${summary}`
     : `${formatted}からの着信は迷惑電話・詐欺の可能性？危険度・みんなの口コミ・対処法をまとめています。この着信に危険はないか？安全な番号かどうかの確認にご利用下さい。`;
+  const description = baseDesc.length < 80
+    ? `${baseDesc}　みんなの口コミ・危険度ランク・対処法を掲載中。`
+    : baseDesc.slice(0, 160);
   return {
     title: `${buildHeading(formatted, rank)} - みんなの迷惑電話番号データベース`,
     description,
