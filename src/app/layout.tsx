@@ -29,6 +29,7 @@ export default function RootLayout({
           gtag('js', new Date());
           gtag('config', 'G-T48QLR1ETG');
         `}</Script>
+        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107670135726196" crossOrigin="anonymous" strategy="afterInteractive" />
       </head>
       <body className="min-h-full flex flex-col bg-gray-100 text-gray-900">
         {children}
