@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   await transporter.sendMail({
     from: `"sagiden-search お問い合わせ" <${process.env.GMAIL_USER}>`,
     to: process.env.GMAIL_USER,
-    subject: `【お問い合わせ】${issueType}`,
+    subject: `【sagidenお問い合わせ】${issueType}`,
     text: [
       `問題の種類: ${issueType}`,
       `対象電話番号: ${phoneNumber || "未入力"}`,
