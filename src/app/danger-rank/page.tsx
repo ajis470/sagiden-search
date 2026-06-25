@@ -119,6 +119,9 @@ export default function DangerRankPage() {
 
       <footer className="border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-400">
         <p>みんなの迷惑電話番号データベース</p>
+        <div className="mt-2 flex justify-center gap-4">
+          <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
+        </div>
       </footer>
     </div>
   );

@@ -165,6 +165,7 @@ export default async function TelPage({ params, searchParams }: Props) {
         <div className="mt-2 flex justify-center gap-4">
           <Link href="/danger-rank" className="underline">危険度ランクについて</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
+          <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
         </div>
       </footer>
     </div>

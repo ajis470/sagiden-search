@@ -119,6 +119,7 @@ export default async function Home() {
         <div className="mt-2 flex justify-center gap-4">
           <Link href="/danger-rank" className="underline">危険度ランクについて</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
+          <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
           <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>
         </div>
       </footer>
