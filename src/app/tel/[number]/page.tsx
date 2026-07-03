@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { after } from "next/server";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { fetchPhone } from "@/lib/api";
+import { fetchPhone, fetchRelated } from "@/lib/api";
 import { triggerResummarize } from "@/lib/resummary";
 import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
@@ -41,7 +41,10 @@ export default async function TelPage({ params, searchParams }: Props) {
   const number = rawNumber.startsWith("plus") ? "+" + rawNumber.slice(4) : rawNumber;
   const { admin } = await searchParams;
   const isAdmin = !!admin && admin === process.env.ADMIN_KEY;
-  const phone = await fetchPhone(number);
+  const [phone, related] = await Promise.all([
+    fetchPhone(number),
+    fetchRelated(number),
+  ]);
   if (!phone) notFound();
 
   // サマリーがない番号は初回アクセス時にバックグラウンドで即時要約
@@ -158,6 +161,28 @@ export default async function TelPage({ params, searchParams }: Props) {
           </p>
           <CommentForm number={number} adminKey={isAdmin ? admin : undefined} />
         </section>
+
+        {/* この番号に近い番号（相互リンク＝同じ番号帯/同一業者の疑い・クロール動線） */}
+        {related.length > 0 && (
+          <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+            <h2 className="font-bold text-lg text-gray-900">この番号に近い番号</h2>
+            <p className="text-sm text-gray-500">
+              同じ番号帯（近い番号）でも報告が寄せられています。あわせてご確認ください。
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {related.map((r) => (
+                <Link
+                  key={r.number}
+                  href={toTelUrl(r.number)}
+                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors"
+                >
+                  <span>{formatNumber(r.number)}</span>
+                  {r.danger_rank && <DangerBadge rank={r.danger_rank} />}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <footer className="border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-400">
@@ -188,6 +213,11 @@ function headingSuffix(rank: string | null): string {
 // <title>とH1の本文部分を一致させるための共通文字列
 function buildHeading(formatted: string, rank: string | null): string {
   return `${formatted}${headingSuffix(rank)}`;
+}
+
+// 番号→ページのパス（国際番号の+はplusプレフィックスに変換）
+function toTelUrl(number: string): string {
+  return `/tel/${number.startsWith("+") ? "plus" + number.slice(1) : number}`;
 }
 
 // 表示はハイフンなしで統一。桁数だけの誤区切り（0120→012-076-...等）を防ぎ、

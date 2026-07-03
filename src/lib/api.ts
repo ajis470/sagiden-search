@@ -108,6 +108,31 @@ export async function fetchLists(): Promise<{ newArrivals: string[]; recentComme
   }
 }
 
+export type RelatedNumber = {
+  number: string;
+  danger_rank: DangerRank | null;
+  comment_count: number;
+};
+
+export async function fetchRelated(number: string, limit = 8): Promise<RelatedNumber[]> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/api_related.php?number=${encodeURIComponent(number)}&limit=${limit}`,
+      { headers, next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (json.related ?? []).map((r: any) => ({
+      number: r.number,
+      danger_rank: r.danger_rank ?? null,
+      comment_count: Number(r.comment_count),
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function postComment(number: string, body: string): Promise<{ ok: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/api_comment.php`, {
