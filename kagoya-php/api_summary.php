@@ -55,7 +55,18 @@ $stmt = $pdo->prepare('SELECT phone_number FROM sagiden_phone_numbers WHERE id =
 $stmt->execute([$phone_number_id]);
 $num = $stmt->fetchColumn();
 if ($num) {
-    indexnow_ping(tel_url($num));
+    $front_url = tel_url($num);
+    // IndexNow(Bing/Yandex)は全件送信。Bingは薄いページも歓迎で、口コミ流入の入口になっている。
+    indexnow_ping($front_url);
+    // Google Indexing APIは「ユーザーの公開口コミが1件以上ある番号」だけに絞る。
+    // スクレイプ要約のみの派生ページに200/日クォータと送信信頼を消費しない。
+    $uc = $pdo->prepare(
+        'SELECT COUNT(*) FROM sagiden_comments WHERE phone_number_id = ? AND source = "user" AND status = "published"'
+    );
+    $uc->execute([$phone_number_id]);
+    if ((int)$uc->fetchColumn() > 0) {
+        google_indexing_ping($front_url);
+    }
 }
 
 json_response(['status' => 'success']);
