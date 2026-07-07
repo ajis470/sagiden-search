@@ -64,6 +64,30 @@ export default async function Home() {
           <SearchBox />
         </section>
 
+        {/* 役立つガイド */}
+        <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
+          <div className="flex items-center gap-2 mb-4 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+            <span className="text-xl">📖</span>
+            <h2 className="text-xl font-bold text-gray-900">迷惑電話・詐欺電話への対処ガイド</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { href: "/guide/unknown-call", title: "知らない番号への対処法", desc: "折り返す前に確認すべきこと" },
+              { href: "/guide/block", title: "着信拒否・ブロック方法", desc: "iPhone・Android・キャリア別" },
+              { href: "/guide/scam-types", title: "特殊詐欺の手口と見分け方", desc: "よくある言い回しと対処" },
+            ].map(({ href, title, desc }) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-xl border border-gray-200 bg-white px-4 py-4 hover:border-red-300 hover:shadow-sm transition-all flex flex-col gap-1"
+              >
+                <span className="font-bold text-gray-900 text-sm">{title}</span>
+                <span className="text-xs text-gray-500 leading-6">{desc}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* 危険度が高い番号（常設） */}
         {danger.length > 0 && (
           <RankingSection
@@ -128,6 +152,9 @@ export default async function Home() {
         <p>みんなの迷惑電話番号データベース</p>
         <div className="mt-2 flex justify-center gap-4">
           <Link href="/danger-rank" className="underline">危険度ランクについて</Link>
+          <Link href="/guide/unknown-call" className="underline">知らない番号への対処法</Link>
+          <Link href="/guide/block" className="underline">着信拒否の方法</Link>
+          <Link href="/guide/scam-types" className="underline">詐欺の手口</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
           <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
           <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>
