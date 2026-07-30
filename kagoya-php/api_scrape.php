@@ -76,11 +76,11 @@ if (!empty($input['reset_resummary'])) {
     json_response(['status' => 'success', 'action' => 'reset_resummary']);
 }
 
-// comment_count を更新。force_resummary=true の場合は件数に関わらずフラグをセット
+// comment_count を更新。force_resummary=true の場合は件数に関わらずフラグをセット（ロック番号は除く）
 $force_resummary = !empty($input['force_resummary']);
 if ($inserted > 0 || $force_resummary) {
     $resummary_flag = ($force_resummary || $inserted >= 5) ? 1 : 0;
-    $pdo->prepare('UPDATE sagiden_phone_numbers SET needs_resummary = GREATEST(needs_resummary, ?), comment_count = comment_count + ? WHERE id = ?')
+    $pdo->prepare('UPDATE sagiden_phone_numbers SET needs_resummary = IF(resummary_locked = 1, 0, GREATEST(needs_resummary, ?)), comment_count = comment_count + ? WHERE id = ?')
         ->execute([$resummary_flag, $inserted, $phone_id]);
 }
 

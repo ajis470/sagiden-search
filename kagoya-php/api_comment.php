@@ -69,9 +69,9 @@ try {
 }
 
 // publishedのときだけcomment_countをインクリメント＆再要約フラグをセット
-// ユーザー投稿は1件でも価値があるので必ずフラグを立てる
+// ユーザー投稿は1件でも価値があるので必ずフラグを立てる（ロック番号は除く）
 if ($status === 'published') {
-    $pdo->prepare('UPDATE sagiden_phone_numbers SET comment_count = comment_count + 1, needs_resummary = 1 WHERE id = ?')
+    $pdo->prepare('UPDATE sagiden_phone_numbers SET comment_count = comment_count + 1, needs_resummary = IF(resummary_locked = 1, 0, 1) WHERE id = ?')
         ->execute([$phone_id]);
 }
 
