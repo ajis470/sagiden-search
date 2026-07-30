@@ -23,8 +23,9 @@ sagiden-search/
 │   │   ├── layout.tsx            GA4(G-T48QLR1ETG)統合、共通レイアウト
 │   │   ├── tel/[number]/page.tsx 電話番号詳細ページ（+番号はplusプレフィックス）
 │   │   ├── danger-rank/page.tsx  危険度ランク説明（C/B/A/S/SS/SSS）
+│   │   ├── guide/*/page.tsx      AdSense対策の独自解説ガイド6本（対処法・ブロック方法・詐欺の手口・被害後の相談窓口・高齢家族の守り方・番号漏洩の理由）
 │   │   ├── api/comment/route.ts  コメント投稿API（Gemini審査・Rate limit付き）
-│   │   └── sitemap.ts            動的サイトマップ（revalidate 1時間）
+│   │   └── sitemap.ts            動的サイトマップ（revalidate 1時間、中身のある番号のみ）
 │   ├── components/
 │   │   ├── SearchBox.tsx         検索ボックス（+番号→plusプレフィックス変換）
 │   │   ├── CommentForm.tsx       コメント投稿（call_type選択・着信日時挿入ボタン付き）

@@ -75,6 +75,9 @@ export default async function Home() {
               { href: "/guide/unknown-call", title: "知らない番号への対処法", desc: "折り返す前に確認すべきこと" },
               { href: "/guide/block", title: "着信拒否・ブロック方法", desc: "iPhone・Android・キャリア別" },
               { href: "/guide/scam-types", title: "特殊詐欺の手口と見分け方", desc: "よくある言い回しと対処" },
+              { href: "/guide/after-scammed", title: "詐欺被害に遭った時の対処法", desc: "相談窓口・振込後の初動対応" },
+              { href: "/guide/protect-elderly", title: "高齢の家族を詐欺から守る方法", desc: "予防策・見守りポイント" },
+              { href: "/guide/why-spam-calls", title: "迷惑電話が増える理由", desc: "電話番号の漏洩経路を解説" },
             ].map(({ href, title, desc }) => (
               <Link
                 key={href}
@@ -155,6 +158,9 @@ export default async function Home() {
           <Link href="/guide/unknown-call" className="underline">知らない番号への対処法</Link>
           <Link href="/guide/block" className="underline">着信拒否の方法</Link>
           <Link href="/guide/scam-types" className="underline">詐欺の手口</Link>
+          <Link href="/guide/after-scammed" className="underline">被害後の相談窓口</Link>
+          <Link href="/guide/protect-elderly" className="underline">高齢家族を守る方法</Link>
+          <Link href="/guide/why-spam-calls" className="underline">迷惑電話が増える理由</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
           <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
           <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>

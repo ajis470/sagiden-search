@@ -113,6 +113,12 @@ export default function ScamTypesPage() {
             <Link href="/danger-rank" className="text-gray-600 underline">
               危険度ランクの見方 →
             </Link>
+            <Link href="/guide/after-scammed" className="text-gray-600 underline">
+              被害に遭った場合の対処法 →
+            </Link>
+            <Link href="/guide/protect-elderly" className="text-gray-600 underline">
+              高齢の家族を守る方法 →
+            </Link>
           </div>
         </section>
 
