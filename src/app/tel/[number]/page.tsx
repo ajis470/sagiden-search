@@ -29,10 +29,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const description = baseDesc.length < 80
     ? `${baseDesc}　みんなの口コミ・危険度ランク・対処法を掲載中。`
     : baseDesc.slice(0, 160);
+  // 要約もユーザー公開口コミも無い「判定中」だけのページは中身が薄いためnoindex。
+  // 要約が付くか口コミが公開された時点で次回クロールから自動的に外れる（動的レンダリングのため）
+  const hasPublishedUserComment = phone?.comments.some((c) => c.status === "published") ?? false;
+  const isThin = !rank && !hasPublishedUserComment;
   return {
     title: `${buildHeading(formatted, rank)} - みんなの迷惑電話番号データベース`,
     description,
-    ...(isAdmin && { robots: { index: false, follow: false } }),
+    ...((isAdmin || isThin) && { robots: { index: false, follow: false } }),
   };
 }
 
