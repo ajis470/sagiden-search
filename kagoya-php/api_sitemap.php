@@ -9,18 +9,17 @@ if ($secret !== API_SECRET) {
 
 $pdo = get_db();
 
-// スクレイピングデータまたはAI要約がある番号のみ返す
+// 中身がある番号だけ返す（AI要約あり、または公開済みユーザー投稿がある）
+// 判定中だけの薄いページをGoogleに大量送信しない（AdSense「有用性の低いコンテンツ」対策）
 $stmt = $pdo->query("
-    SELECT DISTINCT p.phone_number, p.updated_at
-    FROM sagiden_phone_numbers p
-    WHERE EXISTS (
-        SELECT 1 FROM sagiden_comments c
-        WHERE c.phone_number_id = p.id AND c.source = 'scraped'
-    ) OR EXISTS (
-        SELECT 1 FROM sagiden_ai_summaries s
-        WHERE s.phone_number_id = p.id
-    )
-    ORDER BY p.updated_at DESC
+    SELECT DISTINCT pn.phone_number, pn.updated_at
+    FROM sagiden_phone_numbers pn
+    WHERE pn.danger_rank IS NOT NULL
+       OR EXISTS (
+            SELECT 1 FROM sagiden_comments c
+            WHERE c.phone_number_id = pn.id AND c.source = 'user' AND c.status = 'published'
+       )
+    ORDER BY pn.updated_at DESC
 ");
 
 $numbers = $stmt->fetchAll(PDO::FETCH_ASSOC);
