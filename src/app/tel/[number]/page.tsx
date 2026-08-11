@@ -7,6 +7,7 @@ import { triggerResummarize } from "@/lib/resummary";
 import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
 import CommentForm from "@/components/CommentForm";
+import AlsokBanner from "@/components/AlsokBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -108,6 +109,8 @@ export default async function TelPage({ params, searchParams }: Props) {
             </div>
           )}
         </section>
+
+        <AlsokBanner />
 
         {/* みんなから集まった情報 */}
         {summary?.highlights && summary.highlights.length > 0 && (
