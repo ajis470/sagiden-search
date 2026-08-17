@@ -105,7 +105,7 @@ export default async function TelPage({ params, searchParams }: Props) {
             <h2 className="text-lg font-bold text-gray-900">この番号って何？</h2>
           </div>
           {summary?.summary ? (
-            <p className="text-gray-700 leading-7">{summary.summary}</p>
+            <p className="text-gray-700 leading-7 font-semibold">{summary.summary}</p>
           ) : (
             <p className="text-gray-400 text-sm">
               まだ情報が集まっていません。口コミを投稿してみんなに教えてください。
@@ -128,9 +128,12 @@ export default async function TelPage({ params, searchParams }: Props) {
               <span className="text-xl">📝</span>
               <h2 className="text-lg font-bold text-gray-900">みんなから集まったこの番号の情報</h2>
             </div>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 bg-gray-50 rounded-2xl p-4">
               {summary.highlights.map((h, i) => (
-                <li key={i} className="flex gap-3 text-gray-700 leading-7">
+                <li
+                  key={i}
+                  className="flex gap-3 text-gray-700 leading-7 bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4"
+                >
                   <span className="text-red-400 shrink-0 mt-0.5">●</span>
                   <span>{h}</span>
                 </li>
@@ -140,7 +143,7 @@ export default async function TelPage({ params, searchParams }: Props) {
         )}
 
         {/* 口コミ一覧 */}
-        <section className="flex flex-col gap-4">
+        <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
           <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
             <span className="text-xl">💬</span>
             <h2 className="text-lg font-bold text-gray-900">みんなの口コミ</h2>
@@ -148,7 +151,7 @@ export default async function TelPage({ params, searchParams }: Props) {
           {phone.comments.length === 0 ? (
             <p className="text-gray-400 text-sm">まだ口コミはありません。最初の投稿者になりましょう。</p>
           ) : (
-            <ol className="flex flex-col gap-4 bg-gray-50 rounded-2xl p-4 pl-6">
+            <ol className="flex flex-col gap-4 bg-gray-50 rounded-2xl p-4">
               {phone.comments.map((c) => (
                 <li
                   key={c.id}
