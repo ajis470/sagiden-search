@@ -90,11 +90,20 @@ export default async function TelPage({ params, searchParams }: Props) {
               <DangerRankPopover />
             </span>
           </div>
+          <Link
+            href="#comment-form"
+            className="inline-flex items-center gap-1.5 self-start rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+          >
+            📝 この番号について口コミを投稿する
+          </Link>
         </section>
 
         {/* まとめ */}
         <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
-          <h2 className="font-bold text-lg text-gray-900">この番号について</h2>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+            <span className="text-xl">📋</span>
+            <h2 className="text-lg font-bold text-gray-900">この番号って何？</h2>
+          </div>
           {summary?.summary ? (
             <p className="text-gray-700 leading-7">{summary.summary}</p>
           ) : (
@@ -115,7 +124,10 @@ export default async function TelPage({ params, searchParams }: Props) {
         {/* みんなから集まった情報 */}
         {summary?.highlights && summary.highlights.length > 0 && (
           <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
-            <h2 className="font-bold text-lg text-gray-900">みんなから集まったこの番号に対する情報</h2>
+            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+              <span className="text-xl">📝</span>
+              <h2 className="text-lg font-bold text-gray-900">みんなから集まったこの番号の情報</h2>
+            </div>
             <ul className="flex flex-col gap-3">
               {summary.highlights.map((h, i) => (
                 <li key={i} className="flex gap-3 text-gray-700 leading-7">
@@ -129,16 +141,20 @@ export default async function TelPage({ params, searchParams }: Props) {
 
         {/* 口コミ一覧 */}
         <section className="flex flex-col gap-4">
-          <h2 className="font-bold text-lg text-gray-900">口コミ</h2>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+            <span className="text-xl">💬</span>
+            <h2 className="text-lg font-bold text-gray-900">みんなの口コミ</h2>
+          </div>
           {phone.comments.length === 0 ? (
             <p className="text-gray-400 text-sm">まだ口コミはありません。最初の投稿者になりましょう。</p>
           ) : (
-            <ol className="flex flex-col gap-3">
+            <ol className="flex flex-col gap-4 bg-gray-50 rounded-2xl p-4 pl-6">
               {phone.comments.map((c) => (
                 <li
                   key={c.id}
-                  className="bg-white rounded-xl border border-gray-200 px-5 py-4"
+                  className="relative bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4"
                 >
+                  <span className="absolute left-0 top-5 -ml-[7px] w-3 h-3 bg-white border-l border-b border-gray-200 shadow-[-1px_1px_1px_rgba(0,0,0,0.03)] rotate-45" />
                   {c.call_type && (
                     <span className="inline-block mb-2 text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                       {{ call: "通話", sms: "SMS", missed: "不在着信", voicemail: "留守電" }[c.call_type]}
@@ -163,8 +179,11 @@ export default async function TelPage({ params, searchParams }: Props) {
         <AlsokBanner />
 
         {/* 口コミ投稿 */}
-        <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
-          <h2 className="font-bold text-lg text-gray-900">口コミを投稿する</h2>
+        <section id="comment-form" className="scroll-mt-4 bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
+          <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+            <span className="text-xl">✍️</span>
+            <h2 className="text-lg font-bold text-gray-900">口コミを投稿する</h2>
+          </div>
           <p className="text-sm text-gray-500">
             誹謗中傷・個人情報を含む投稿は掲載されません。
           </p>
@@ -174,7 +193,10 @@ export default async function TelPage({ params, searchParams }: Props) {
         {/* この番号に近い番号（相互リンク＝同じ番号帯/同一業者の疑い・クロール動線） */}
         {related.length > 0 && (
           <section className="bg-white rounded-2xl border border-gray-200 px-6 py-6 flex flex-col gap-4">
-            <h2 className="font-bold text-lg text-gray-900">この番号に近い番号</h2>
+            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
+              <span className="text-xl">📍</span>
+              <h2 className="text-lg font-bold text-gray-900">この番号に近い番号</h2>
+            </div>
             <p className="text-sm text-gray-500">
               同じ番号帯（近い番号）でも報告が寄せられています。あわせてご確認ください。
             </p>
