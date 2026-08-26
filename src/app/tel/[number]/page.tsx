@@ -8,6 +8,7 @@ import DangerBadge from "@/components/DangerBadge";
 import DangerRankPopover from "@/components/DangerRankPopover";
 import CommentForm from "@/components/CommentForm";
 import AlsokBanner from "@/components/AlsokBanner";
+import GuideNav from "@/components/GuideNav";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +74,7 @@ export default async function TelPage({ params, searchParams }: Props) {
             みんなの迷惑電話番号データベース
           </span>
         </div>
+        <GuideNav />
       </header>
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 flex flex-col gap-8">

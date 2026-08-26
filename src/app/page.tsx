@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import SearchBox from "@/components/SearchBox";
+import GuideNav from "@/components/GuideNav";
 import DangerBadge from "@/components/DangerBadge";
 import { fetchTrending, fetchLists, type TrendingNumber } from "@/lib/api";
 
@@ -33,6 +34,7 @@ export default async function Home() {
             みんなの迷惑電話番号データベース
           </span>
         </div>
+        <GuideNav />
       </header>
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-10 flex flex-col gap-10">
