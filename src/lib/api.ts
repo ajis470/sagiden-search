@@ -48,24 +48,23 @@ export type Comment = {
 export type TrendingPeriod = "24h" | "7d" | "30d" | "danger";
 
 export async function fetchTrending(period: TrendingPeriod = "24h", limit = 20): Promise<TrendingNumber[]> {
-  try {
-    const res = await fetch(`${API_BASE}/api_trending.php?period=${period}&limit=${limit}`, {
-      headers,
-      next: { revalidate: period === "24h" ? 300 : 3600 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (data.trending ?? []).map((row: any) => ({
-      number: row.phone_number,
-      danger_rank: row.danger_rank ?? row.ai_rank ?? null,
-      comment_count: Number(row.comment_count),
-      search_count_24h: Number(row.search_count_24h),
-      summary: row.summary ?? null,
-    }));
-  } catch {
-    return [];
-  }
+  // KAGOYA側の一時的な失敗をここで空配列に変換すると、ISR再生成時にその「空」が
+  // 正常なスナップショットとしてそのままキャッシュされ、直前の正常な表示を上書きしてしまう。
+  // 例外を投げっぱなしにして、Next.jsに直前の正常なキャッシュを維持させる。
+  const res = await fetch(`${API_BASE}/api_trending.php?period=${period}&limit=${limit}`, {
+    headers,
+    next: { revalidate: period === "24h" ? 300 : 3600 },
+  });
+  if (!res.ok) throw new Error(`fetchTrending(${period}) failed: ${res.status}`);
+  const data = await res.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data.trending ?? []).map((row: any) => ({
+    number: row.phone_number,
+    danger_rank: row.danger_rank ?? row.ai_rank ?? null,
+    comment_count: Number(row.comment_count),
+    search_count_24h: Number(row.search_count_24h),
+    summary: row.summary ?? null,
+  }));
 }
 
 export const fetchPhone = cache(async function fetchPhone(number: string): Promise<PhoneNumber | null> {
@@ -92,20 +91,17 @@ export const fetchPhone = cache(async function fetchPhone(number: string): Promi
 });
 
 export async function fetchLists(): Promise<{ newArrivals: string[]; recentComments: string[] }> {
-  try {
-    const res = await fetch(`${API_BASE}/api_lists.php`, {
-      headers,
-      next: { revalidate: 43200 },
-    });
-    if (!res.ok) return { newArrivals: [], recentComments: [] };
-    const json = await res.json();
-    return {
-      newArrivals: json.new_arrivals ?? [],
-      recentComments: json.recent_comments ?? [],
-    };
-  } catch {
-    return { newArrivals: [], recentComments: [] };
-  }
+  // fetchTrendingと同様、失敗を空配列に変換しない（ISRキャッシュの上書き事故を防ぐため）。
+  const res = await fetch(`${API_BASE}/api_lists.php`, {
+    headers,
+    next: { revalidate: 43200 },
+  });
+  if (!res.ok) throw new Error(`fetchLists failed: ${res.status}`);
+  const json = await res.json();
+  return {
+    newArrivals: json.new_arrivals ?? [],
+    recentComments: json.recent_comments ?? [],
+  };
 }
 
 export type RelatedNumber = {
