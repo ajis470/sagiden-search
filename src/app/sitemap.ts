@@ -14,6 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/guide/after-scammed`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/guide/protect-elderly`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/guide/why-spam-calls`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/guide/number-types`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/guide/caller-id-spoofing`, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   try {

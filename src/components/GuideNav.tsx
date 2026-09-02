@@ -7,6 +7,8 @@ export const GUIDE_LINKS = [
   { href: "/guide/after-scammed", label: "詐欺被害に遭った時の対処法" },
   { href: "/guide/protect-elderly", label: "高齢の家族を守る方法" },
   { href: "/guide/why-spam-calls", label: "迷惑電話が増える理由" },
+  { href: "/guide/number-types", label: "電話番号帯の意味と特徴" },
+  { href: "/guide/caller-id-spoofing", label: "発信者番号偽装に注意" },
 ];
 
 export default function GuideNav() {
