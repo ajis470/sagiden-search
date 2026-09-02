@@ -70,7 +70,7 @@ export default async function Home() {
         <section className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-6">
           <div className="flex items-center gap-2 mb-4 bg-gradient-to-r from-blue-200 to-transparent rounded-xl pl-3 py-2 border-2 border-blue-300">
             <span className="text-xl">📖</span>
-            <h2 className="text-xl font-bold text-gray-900">迷惑電話・詐欺電話への対処ガイド</h2>
+            <h2 className="text-xl font-bold text-gray-900">迷惑電話・詐欺電話ガイド</h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             {[
@@ -80,6 +80,8 @@ export default async function Home() {
               { href: "/guide/after-scammed", title: "詐欺被害に遭った時の対処法", desc: "相談窓口・振込後の初動対応" },
               { href: "/guide/protect-elderly", title: "高齢の家族を詐欺から守る方法", desc: "予防策・見守りポイント" },
               { href: "/guide/why-spam-calls", title: "迷惑電話が増える理由", desc: "電話番号の漏洩経路を解説" },
+              { href: "/guide/number-types", title: "電話番号帯の意味と特徴", desc: "070/080/090・0120/0800など" },
+              { href: "/guide/caller-id-spoofing", title: "発信者番号偽装に注意", desc: "下4桁0110の警察詐欺の手口" },
             ].map(({ href, title, desc }) => (
               <Link
                 key={href}
@@ -163,6 +165,8 @@ export default async function Home() {
           <Link href="/guide/after-scammed" className="underline">被害後の相談窓口</Link>
           <Link href="/guide/protect-elderly" className="underline">高齢家族を守る方法</Link>
           <Link href="/guide/why-spam-calls" className="underline">迷惑電話が増える理由</Link>
+          <Link href="/guide/number-types" className="underline">電話番号帯の意味と特徴</Link>
+          <Link href="/guide/caller-id-spoofing" className="underline">発信者番号偽装に注意</Link>
           <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
           <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
           <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>
