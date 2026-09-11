@@ -86,6 +86,7 @@ export default async function Home() {
               <Link
                 key={href}
                 href={href}
+                prefetch={false}
                 className="rounded-xl border border-gray-200 bg-white px-4 py-4 hover:border-red-300 hover:shadow-sm transition-all flex flex-col gap-1"
               >
                 <span className="font-bold text-gray-900 text-sm">{title}</span>
@@ -158,17 +159,17 @@ export default async function Home() {
       <footer className="border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-400">
         <p>みんなの迷惑電話番号データベース</p>
         <div className="mt-2 flex justify-center gap-4">
-          <Link href="/danger-rank" className="underline">危険度ランクについて</Link>
-          <Link href="/guide/unknown-call" className="underline">知らない番号への対処法</Link>
-          <Link href="/guide/block" className="underline">着信拒否の方法</Link>
-          <Link href="/guide/scam-types" className="underline">詐欺の手口</Link>
-          <Link href="/guide/after-scammed" className="underline">被害後の相談窓口</Link>
-          <Link href="/guide/protect-elderly" className="underline">高齢家族を守る方法</Link>
-          <Link href="/guide/why-spam-calls" className="underline">迷惑電話が増える理由</Link>
-          <Link href="/guide/number-types" className="underline">電話番号帯の意味と特徴</Link>
-          <Link href="/guide/caller-id-spoofing" className="underline">発信者番号偽装に注意</Link>
-          <Link href="/contact" className="underline">掲載内容の問題を報告</Link>
-          <Link href="/privacy-policy" className="underline">プライバシーポリシー</Link>
+          <Link href="/danger-rank" prefetch={false} className="underline">危険度ランクについて</Link>
+          <Link href="/guide/unknown-call" prefetch={false} className="underline">知らない番号への対処法</Link>
+          <Link href="/guide/block" prefetch={false} className="underline">着信拒否の方法</Link>
+          <Link href="/guide/scam-types" prefetch={false} className="underline">詐欺の手口</Link>
+          <Link href="/guide/after-scammed" prefetch={false} className="underline">被害後の相談窓口</Link>
+          <Link href="/guide/protect-elderly" prefetch={false} className="underline">高齢家族を守る方法</Link>
+          <Link href="/guide/why-spam-calls" prefetch={false} className="underline">迷惑電話が増える理由</Link>
+          <Link href="/guide/number-types" prefetch={false} className="underline">電話番号帯の意味と特徴</Link>
+          <Link href="/guide/caller-id-spoofing" prefetch={false} className="underline">発信者番号偽装に注意</Link>
+          <Link href="/contact" prefetch={false} className="underline">掲載内容の問題を報告</Link>
+          <Link href="/privacy-policy" prefetch={false} className="underline">プライバシーポリシー</Link>
           <a href="https://x.com/sagidensearch" target="_blank" rel="noopener noreferrer" className="underline">X（旧Twitter）</a>
         </div>
       </footer>
@@ -204,6 +205,7 @@ function NumberListSection({
           <Link
             key={number}
             href={toTelUrl(number)}
+            prefetch={false}
             className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors"
           >
             {number}
@@ -239,6 +241,7 @@ function RankingSection({
           <li key={item.number}>
             <Link
               href={toTelUrl(item.number)}
+              prefetch={false}
               className="flex items-center gap-4 rounded-xl bg-white border border-gray-200 px-5 py-4 hover:border-red-300 hover:shadow-sm transition-all"
             >
               <span className="text-2xl font-bold text-gray-300 w-7 shrink-0">

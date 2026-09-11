@@ -20,6 +20,7 @@ export default function GuideNav() {
           <Link
             key={href}
             href={href}
+            prefetch={false}
             className="hover:text-red-600 hover:underline shrink-0"
           >
             {label}
