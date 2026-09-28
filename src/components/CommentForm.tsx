@@ -113,7 +113,7 @@ export default function CommentForm({ number, adminKey }: Props) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="できるだけわかりやすく書いていただけると、みんなの役に立ちます。"
           rows={4}
-          className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-base focus:border-red-500 focus:outline-none resize-none"
+          className="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 focus:border-red-500 focus:outline-none resize-none"
         />
       </div>
       {status === "error" && (
