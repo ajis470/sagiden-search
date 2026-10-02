@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { waitUntil } from "@vercel/functions";
+import { revalidateTag } from "next/cache";
 import { triggerResummarize } from "@/lib/resummary";
+import { phoneTag } from "@/lib/api";
 
 const API_BASE = process.env.API_BASE!;
 const API_SECRET = process.env.API_SECRET!;
@@ -88,6 +90,7 @@ export async function POST(req: NextRequest) {
   });
 
   const json = await res.json();
+  if (res.ok) revalidateTag(phoneTag(number), { expire: 0 });
   const response = NextResponse.json({ ...json, status_moderation: status }, { status: res.status });
 
   if (res.ok && status === "published") {

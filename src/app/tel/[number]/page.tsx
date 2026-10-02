@@ -18,7 +18,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { number: rawNumber } = await params;
   const number = rawNumber.startsWith("plus") ? "+" + rawNumber.slice(4) : rawNumber;
   const { admin } = await searchParams;
-  const phone = await fetchPhone(number);
+  const phone = await fetchPhone(number, !!admin && admin === process.env.ADMIN_KEY);
   const formatted = formatNumber(number);
   const rank = phone?.danger_rank ?? null;
   const displayRank = rank ?? "判定中";
@@ -48,7 +48,7 @@ export default async function TelPage({ params, searchParams }: Props) {
   const { admin } = await searchParams;
   const isAdmin = !!admin && admin === process.env.ADMIN_KEY;
   const [phone, related] = await Promise.all([
-    fetchPhone(number),
+    fetchPhone(number, isAdmin),
     fetchRelated(number),
   ]);
   if (!phone) notFound();

@@ -67,10 +67,16 @@ export async function fetchTrending(period: TrendingPeriod = "24h", limit = 20):
   }));
 }
 
-export const fetchPhone = cache(async function fetchPhone(number: string): Promise<PhoneNumber | null> {
+export const phoneTag = (number: string) => `phone:${number}`;
+
+// KAGOYAの応答が時々数秒遅れるため、通常は60秒キャッシュ＋期限切れ後は古い内容を即返して裏で更新する。
+// 口コミ投稿時はphoneTagで即破棄。管理者表示だけは常に最新を取る（fresh=true）。
+export const fetchPhone = cache(async function fetchPhone(number: string, fresh = false): Promise<PhoneNumber | null> {
   const res = await fetch(
     `${API_BASE}/api_phone.php?number=${encodeURIComponent(number)}`,
-    { headers, cache: "no-store" }
+    fresh
+      ? { headers, cache: "no-store" }
+      : { headers, next: { revalidate: 60, tags: [phoneTag(number)] } }
   );
   // api_phone.phpは正しい形式の番号なら未登録でも自動作成して返すため、
   // 400（番号形式が不正）だけが本当の「該当なし」。それ以外の失敗は
